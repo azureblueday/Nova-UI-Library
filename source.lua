@@ -44,7 +44,7 @@ local CONFIG = {
         'Loading assets...',
         'Bypassing Anticheat...',
         'Almost ready...',
-        'Configuring' .. scriptname,
+		'Configuring ' .. scriptname,
         'Setting up environment...',
     },
     executorUsed = (function()
@@ -53,6 +53,8 @@ local CONFIG = {
 }
 
 local Utilities = {}
+
+local IS_MOBILE = UserInputService.TouchEnabled and not UserInputService.MouseEnabled
 
 function Utilities.createTween(
     instance,
@@ -384,8 +386,6 @@ local THEMES = {
 local CurrentTheme = THEMES.Dark
 local ColorAccent = Color3.fromRGB(146, 36, 242)
 
-local Utility = {}
-
 function Utility.Create(className, properties, children)
     local instance = Instance.new(className)
 
@@ -536,9 +536,20 @@ function Components.Window(properties)
         window.Parent = game:GetService("CoreGui")
     end
 
-    local isMobile = game:GetService("UserInputService").TouchEnabled and not game:GetService("UserInputService").MouseEnabled
-    local defaultWidth = isMobile and 533 or 800
-    local defaultHeight = isMobile and 333 or 500
+local isMobile = UserInputService.TouchEnabled and not UserInputService.MouseEnabled
+local defaultWidth = isMobile and 533 or 800
+local defaultHeight = isMobile and 333 or 500
+
+local cam = workspace.CurrentCamera
+if not cam then
+    cam = workspace:GetPropertyChangedSignal("CurrentCamera"):Wait()
+end
+
+local viewport = cam.ViewportSize
+local vw, vh = viewport.X, viewport.Y
+
+defaultWidth = math.min(defaultWidth, vw * 0.95)
+defaultHeight = math.min(defaultHeight, vh * 0.9)
 
     local main = Utility.Create("Frame", {
         Name = "Main",
@@ -548,6 +559,10 @@ function Components.Window(properties)
         Size = UDim2.fromOffset(defaultWidth, defaultHeight),
         ClipsDescendants = true
     })
+
+	local scale = Instance.new("UIScale")
+	scale.Scale = isMobile and 0.75 or 1
+	scale.Parent = main
 
     Utility.Corner(main, 12)
     Utility.Shadow(main, 6)
@@ -561,7 +576,7 @@ function Components.Titlebar(parent, properties)
     local titlebar = Utility.Create("Frame", {
         Name = "Titlebar",
         BackgroundColor3 = Color3.fromRGB(8, 7, 8),
-        Size = UDim2.new(1, 0, 0, 40),
+		Size = UDim2.new(1, 0, 0, isMobile and 36 or 40),
         ZIndex = 5
     })
 
@@ -745,7 +760,7 @@ function Components.Sidebar(parent)
         Name = "Sidebar",
         BackgroundColor3 = Color3.fromRGB(8, 7, 8),
         Position = UDim2.fromOffset(0, 40),
-        Size = UDim2.new(0, 200, 1, -40)
+ 		Size = UDim2.new(0, IS_MOBILE and 160 or 200, 1, -40),
     })
     Utility.Stroke(sidebar, { Color = Color3.fromRGB(55, 55, 55) })
 
@@ -802,8 +817,8 @@ local DEFAULT_TWEEN_ELASTIC = TweenInfo.new(0.5, Enum.EasingStyle.Elastic, Enum.
 function Components.Tab(props)
     local tab = Utility.Create("TextButton", {
         Name = props.Name .. "Tab",
-        BackgroundColor3 = Color3.fromRGB(7, 7, 7),
-        BackgroundTransparency = 1,
+        BackgroundColor3 = Color3.fromRGB(8, 7, 8),
+        BackgroundTransparency = 0.2,
         Size = UDim2.new(1, 0, 0, 36),
         Text = "",
         AutoButtonColor = false,
@@ -824,7 +839,7 @@ function Components.Tab(props)
         Name = "Icon",
         BackgroundTransparency = 1,
         Image = props.Icon,
-        ImageColor3 = Color3.fromRGB(255, 255, 255),
+        ImageColor3 = Color3.fromRGB(200, 200, 200),
         Position = UDim2.fromOffset(10, 8),
         Size = UDim2.fromOffset(20, 20),
         Rotation = 0
@@ -838,7 +853,7 @@ function Components.Tab(props)
         Position = UDim2.fromOffset(40, 0),
         Size = UDim2.new(1, -50, 1, 0),
         Text = props.Name,
-        TextColor3 = Color3.fromRGB(255, 255, 255),
+        TextColor3 = Color3.fromRGB(200, 200, 200),
         TextSize = 14,
         TextXAlignment = Enum.TextXAlignment.Left,
     })
@@ -857,7 +872,7 @@ function Components.Tab(props)
     tab.MouseLeave:Connect(function()
         if not Components._activeTab or Components._activeTab ~= tab then
             TweenService:Create(tab, DEFAULT_TWEEN, {
-                BackgroundColor3 = Color3.fromRGB(29, 29, 31)
+                BackgroundColor3 = Color3.fromRGB(8, 7, 8)
             }):Play()
         end
     end)
@@ -885,7 +900,7 @@ function Components.UpdateTabColors()
             activeBar.BackgroundColor3 = color1
         end
         if icon then
-            icon.ImageColor3 = isActive and ColorAccent or Color3.fromRGB(255, 255, 255)
+            icon.ImageColor3 = isActive and ColorAccent or Color3.fromRGB(200, 200, 200)
         end
     end
 end
@@ -896,10 +911,10 @@ function Components.SetActiveTab(tab, state)
     local icon  = tab:FindFirstChild("Icon")
 
     if not Components._initialized then
-        tab.BackgroundColor3      = state and UDim2.new(0,4,1,-8) or UDim2.new(0,0,1,-8)
+        tab.BackgroundColor3      = state and Color3.fromRGB(140,0,255) or Color3.fromRGB(20,20,20)
         bar.Size                  = state and UDim2.new(0,4,1,-8) or UDim2.new(0,0,1,-8)
         label.TextColor3          = state and color1
-        icon.ImageColor3          = state and ColorAccent or Color3.fromRGB(255, 255, 255)
+        icon.ImageColor3          = state and ColorAccent or Color3.fromRGB(200,200,200)
         icon.Rotation             = state and 10 or 0
 
         Components._activeTab = tab
@@ -914,10 +929,10 @@ function Components.SetActiveTab(tab, state)
         Size = state and UDim2.new(0,4,1,-8) or UDim2.new(0,0,1,-8)
     }):Play()
     TweenService:Create(label, tweenInfo, {
-        TextColor3 = state and Color3.fromRGB(1,1,1) or Color3.fromRGB(255, 255, 255)
+        TextColor3 = state and Color3.fromRGB(1,1,1) or Color3.fromRGB(200,200,200)
     }):Play()
     TweenService:Create(icon, tweenInfo, {
-        ImageColor3 = state and ColorAccent or Color3.fromRGB(255, 255, 255),
+        ImageColor3 = state and ColorAccent or Color3.fromRGB(200,200,200),
         Rotation    = state and 10 or 0
     }):Play()
 
@@ -1800,6 +1815,8 @@ function Components.Keybind(properties)
         Utility.Tween(button, { Size = UDim2.fromOffset(85, 30), Position = UDim2.new(1, -100, 0.5, -15) }, TWEEN_INFO.Fast)
     end)
 
+	print("parser reached here")
+
     button.MouseButton1Click:Connect(function()
         if listening then return end
         listening = true
@@ -2494,129 +2511,140 @@ function Components.Button(properties)
 end
 
 function Components.Label(properties)
+    properties = properties or {}
+
     local label = Utility.Create("Frame", {
-        Name = properties.Name .. "Label",
+        Name = (properties.Name or "Label") .. "Label",
         BackgroundColor3 = CurrentTheme.Primary.Light,
         BackgroundTransparency = 0.7,
         Size = UDim2.new(1, 0, 0, 44),
         ClipsDescendants = true
     })
-    
+
     Utility.Corner(label, 10)
-    
+
+    local glow = Utility.Create("Frame", {
+        Name = "Glow",
+        BackgroundColor3 = ColorAccent,
+        BackgroundTransparency = 0.9,
+        Size = UDim2.fromScale(1, 1),
+        Visible = false,
+        Parent = label
+    })
+
+    Utility.Corner(glow, 10)
+
     local text = Utility.Create("TextLabel", {
         Name = "Text",
         BackgroundTransparency = 1,
         Font = FONTS.Medium,
         Position = UDim2.fromOffset(16, 0),
         Size = UDim2.new(1, -32, 1, 0),
-        Text = properties.Text or properties.Name,
+        Text = properties.Text or properties.Name or "Label",
         TextColor3 = CurrentTheme.Text.Primary,
         TextSize = 15,
-        TextXAlignment = Enum.TextXAlignment.Center
+        TextXAlignment = Enum.TextXAlignment.Center,
+        Parent = label
     })
-    
-    local glow = Utility.Create("Frame", {
-        Name = "Glow",
-        BackgroundColor3 = ColorAccent,
-        BackgroundTransparency = 0.9,
-        Size = UDim2.fromScale(1, 1),
-        Visible = false
-    })
-    
-    Utility.Corner(glow, 10)
-    
+
     label.MouseEnter:Connect(function()
-        Utility.Tween(glow, {
-            BackgroundTransparency = 0.8
-        }, TWEEN_INFO.Fast)
         glow.Visible = true
+        Utility.Tween(glow, { BackgroundTransparency = 0.8 }, TWEEN_INFO.Fast)
     end)
-    
+
     label.MouseLeave:Connect(function()
-        Utility.Tween(glow, {
-            BackgroundTransparency = 0.9
-        }, TWEEN_INFO.Fast)
-        glow.Visible = false
+        Utility.Tween(glow, { BackgroundTransparency = 0.9 }, TWEEN_INFO.Fast)
+        task.delay(0.1, function()
+            glow.Visible = false
+        end)
     end)
-    
-    glow.Parent = label
-    text.Parent = label
-    
+
     return label
 end
 
+
 function Components.Notification(properties)
+    properties = properties or {}
+
     local Settings = {
         Title = properties.Title or "Notification",
         Description = properties.Description or "",
         Type = properties.Type or "Info",
-        Duration = properties.Duration or 3,
+        Duration = tonumber(properties.Duration) or 3,
         Component = "Notification"
     }
 
     local TypeColors = {
-        Info = {Background = Color3.fromRGB(59,130,246), Icon = "rbxassetid://7733799825"},
-        Success = {Background = Color3.fromRGB(34,197,94), Icon = "rbxassetid://7733799812"},
-        Warning = {Background = Color3.fromRGB(245,158,11), Icon = "rbxassetid://7733799798"},
-        Error = {Background = Color3.fromRGB(146, 36, 242), Icon = "rbxassetid://7733799777"}
+        Info    = { Color = Color3.fromRGB(59,130,246), Icon = "rbxassetid://7733799825" },
+        Success = { Color = Color3.fromRGB(34,197,94),  Icon = "rbxassetid://7733799812" },
+        Warning = { Color = Color3.fromRGB(245,158,11),  Icon = "rbxassetid://7733799798" },
+        Error   = { Color = Color3.fromRGB(239,68,68),   Icon = "rbxassetid://7733799777" }
     }
 
+    local scheme = TypeColors[Settings.Type] or TypeColors.Info
+
+    -- container (created once)
     if not getgenv().NotificationContainer then
-        getgenv().NotificationContainer = Utility.Create("Frame", {
+        local container = Utility.Create("Frame", {
             Name = "NotificationContainer",
             BackgroundTransparency = 1,
             Size = UDim2.new(0, 360, 1, 0),
-            Position = UDim2.new(1, 0, 1, -20),
+            Position = UDim2.new(1, -20, 1, -20),
             AnchorPoint = Vector2.new(1, 1),
             AutomaticSize = Enum.AutomaticSize.Y,
             ClipsDescendants = false,
-            ZIndex = 999,
-            Parent = gethui and gethui() or game:GetService("CoreGui")
+            ZIndex = 999
         })
 
-        Utility.List(getgenv().NotificationContainer, {
-            Padding = UDim.new(0, 30),
+        container.Parent = game:GetService("CoreGui")
+
+        Utility.List(container, {
+            Padding = UDim.new(0, 12),
             SortOrder = Enum.SortOrder.LayoutOrder,
             VerticalAlignment = Enum.VerticalAlignment.Bottom
         })
+
+        getgenv().NotificationContainer = container
     end
 
-    local colorScheme = TypeColors[Settings.Type]
-
+    -- notification frame
     local notification = Utility.Create("Frame", {
         Name = "Notification",
         BackgroundColor3 = CurrentTheme.Primary.Dark,
-        BackgroundTransparency = 0.1,
+        BackgroundTransparency = 0.05,
         Size = UDim2.new(0, 340, 0, 80),
-        Position = UDim2.new(1, 400, 1, 0),
-        AnchorPoint = Vector2.new(1, 1),
+        Position = UDim2.new(1, 400, 0, 0), -- start offscreen
+        AnchorPoint = Vector2.new(1, 0),
         ClipsDescendants = true,
+        ZIndex = 1000,
         Parent = getgenv().NotificationContainer
     })
 
-    Utility.Corner(notification, 8)
+    Utility.Corner(notification, 10)
 
+    -- accent bar
     Utility.Create("Frame", {
-        BackgroundColor3 = colorScheme.Background,
-        Size = UDim2.new(0, 3, 1, 0),
+        BackgroundColor3 = scheme.Color,
+        Size = UDim2.new(0, 4, 1, 0),
         Parent = notification
     })
 
+    -- icon
     Utility.Create("ImageLabel", {
         BackgroundTransparency = 1,
-        Image = colorScheme.Icon,
-        ImageColor3 = colorScheme.Background,
-        Position = UDim2.fromOffset(16, 16),
+        Image = scheme.Icon,
+        ImageColor3 = scheme.Color,
+        Position = UDim2.fromOffset(14, 14),
         Size = UDim2.fromOffset(24, 24),
         Parent = notification
     })
 
+    -- title
     Utility.Create("TextLabel", {
         Text = Settings.Title,
         BackgroundTransparency = 1,
-        Position = UDim2.fromOffset(52, 10),
-        Size = UDim2.new(1, -70, 0, 20),
+        Position = UDim2.fromOffset(48, 10),
+        Size = UDim2.new(1, -60, 0, 20),
         Font = FONTS.Bold,
         TextColor3 = CurrentTheme.Text.Primary,
         TextSize = 16,
@@ -2624,11 +2652,12 @@ function Components.Notification(properties)
         Parent = notification
     })
 
+    -- description
     Utility.Create("TextLabel", {
         Text = Settings.Description,
         BackgroundTransparency = 1,
-        Position = UDim2.fromOffset(52, 34),
-        Size = UDim2.new(1, -70, 0, 36),
+        Position = UDim2.fromOffset(48, 32),
+        Size = UDim2.new(1, -60, 0, 36),
         Font = FONTS.Regular,
         TextColor3 = CurrentTheme.Text.Secondary,
         TextSize = 14,
@@ -2637,27 +2666,43 @@ function Components.Notification(properties)
         Parent = notification
     })
 
-    local progressBar = Utility.Create("Frame", {
-        BackgroundColor3 = colorScheme.Background,
+    -- progress bar
+    local progress = Utility.Create("Frame", {
+        BackgroundColor3 = scheme.Color,
         BackgroundTransparency = 0.7,
         Position = UDim2.new(0, 0, 1, -4),
         Size = UDim2.new(1, 0, 0, 4),
         Parent = notification
     })
 
-    Utility.Tween(notification, {Position = UDim2.new(1, 0, 1, 0)}, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out))
-    Utility.Tween(progressBar, {Size = UDim2.new(0, 0, 0, 4)}, TweenInfo.new(Settings.Duration, Enum.EasingStyle.Linear))
+    -- slide in
+    Utility.Tween(
+        notification,
+        { Position = UDim2.new(1, -20, 0, 0) },
+        TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+    )
 
-    local function close()
-        Utility.Tween(notification, {Position = UDim2.new(1, 400, 1, 0)}, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In))
+    -- progress animation
+    Utility.Tween(
+        progress,
+        { Size = UDim2.new(0, 0, 0, 4) },
+        TweenInfo.new(Settings.Duration, Enum.EasingStyle.Linear)
+    )
+
+    -- close
+    task.delay(Settings.Duration, function()
+        Utility.Tween(
+            notification,
+            { Position = UDim2.new(1, 400, 0, 0) },
+            TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
+        )
+
         task.delay(0.3, function()
             if notification then
                 notification:Destroy()
             end
         end)
-    end
-
-    task.delay(Settings.Duration, close)
+    end)
 
     return notification
 end
@@ -2667,7 +2712,7 @@ local Nova = {}
 function Nova:CreateWindow(props)
     props = props or {}
 
-    local window, main, isMobile = Components.Window({
+    local window, main, IS_MOBILE = Components.Window({
         Name = props.Name or "Nova UI"
     })
 
@@ -2679,6 +2724,10 @@ function Nova:CreateWindow(props)
     local content, contentContainer = Components.Content(main)
 
     local WindowAPI = {}
+
+	function WindowAPI:Notify(data)
+ 	   Components.Notification(data)
+	end
 
     function WindowAPI:CreateTab(name, icon)
         local tabButton = Components.Tab({
@@ -2752,11 +2801,34 @@ end
         return TabAPI
     end
 
-    function WindowAPI:Destroy()
-        window:Destroy()
-    end
+	local windowOpen = true
 
-    return WindowAPI
+local windowOpen = true
+local originalSize = main.Size
+
+function WindowAPI:SetVisible(state)
+    windowOpen = state
+
+    if state then
+        main.Visible = true
+        Utility.Tween(main, { Size = originalSize }, TWEEN_INFO.Medium)
+    else
+        Utility.Tween(main, { Size = UDim2.fromOffset(0, 0) }, TWEEN_INFO.Medium)
+        task.delay(0.25, function()
+            main.Visible = false
+        end)
+    end
+end
+
+function WindowAPI:Toggle()
+    self:SetVisible(not windowOpen)
+end
+
+function WindowAPI:IsVisible()
+    return windowOpen
+end
+
+return WindowAPI
 end
 
 return Nova
