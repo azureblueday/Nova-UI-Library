@@ -1,4 +1,17 @@
-
+--[[
+    ╔═══════════════════════════════════════════════════════════════╗
+    ║                    NOVA UI LIBRARY v2.0                       ║
+    ║              Dark Theme with Purple Accents                   ║
+    ║                                                               ║
+    ║  Features:                                                    ║
+    ║  • Tabs with Material Icons                                   ║
+    ║  • Toggles, Sliders, Dropdowns                               ║
+    ║  • Color Picker, Keybind Picker                              ║
+    ║  • Text Input, Buttons                                        ║
+    ║  • Smooth Animations                                          ║
+    ║  • Config Save/Load System                                    ║
+    ╚═══════════════════════════════════════════════════════════════╝
+]]
 
 local NovaUI = {}
 NovaUI.__index = NovaUI
@@ -418,8 +431,8 @@ function NovaUI:CreateGui()
         Name = "Controls",
         Parent = self.TitleBar,
         BackgroundTransparency = 1,
-        Position = UDim2.new(1, -90, 0, 0),
-        Size = UDim2.new(0, 80, 1, 0),
+        Position = UDim2.new(1, -70, 0, 0),
+        Size = UDim2.new(0, 60, 1, 0),
     }, {
         Utility.Create("UIListLayout", {
             FillDirection = Enum.FillDirection.Horizontal,
@@ -428,12 +441,6 @@ function NovaUI:CreateGui()
             VerticalAlignment = Enum.VerticalAlignment.Center,
         }),
     })
-    
-    -- Save Button
-    local saveBtn = self:CreateControlButton(controls, Icons.save, function()
-        ConfigSystem:Save()
-        self:Notify("Config Saved", "Your settings have been saved successfully!", "success")
-    end)
     
     -- Minimize Button
     local minimizeBtn = self:CreateControlButton(controls, "rbxassetid://6031097229", function()
@@ -455,19 +462,26 @@ function NovaUI:CreateGui()
         BackgroundColor3 = Theme.Secondary,
         BorderSizePixel = 0,
         Position = UDim2.new(0, 0, 0, 40),
-        Size = UDim2.new(0, 50, 1, -40),
+        Size = UDim2.new(0, 130, 1, -40),
     })
     
-    self.TabList = Utility.Create("Frame", {
+    self.TabList = Utility.Create("ScrollingFrame", {
         Name = "TabList",
         Parent = self.TabContainer,
         BackgroundTransparency = 1,
         Position = UDim2.new(0, 0, 0, 10),
         Size = UDim2.new(1, 0, 1, -20),
+        ScrollBarThickness = 0,
+        CanvasSize = UDim2.new(0, 0, 0, 0),
+        AutomaticCanvasSize = Enum.AutomaticSize.Y,
     }, {
         Utility.Create("UIListLayout", {
             Padding = UDim.new(0, 5),
             HorizontalAlignment = Enum.HorizontalAlignment.Center,
+        }),
+        Utility.Create("UIPadding", {
+            PaddingLeft = UDim.new(0, 8),
+            PaddingRight = UDim.new(0, 8),
         }),
     })
     
@@ -478,7 +492,7 @@ function NovaUI:CreateGui()
         BackgroundColor3 = Theme.Accent,
         BorderSizePixel = 0,
         Position = UDim2.new(0, 0, 0, 10),
-        Size = UDim2.new(0, 3, 0, 40),
+        Size = UDim2.new(0, 3, 0, 36),
     }, {
         Utility.Create("UICorner", {CornerRadius = UDim.new(0, 2)}),
     })
@@ -488,8 +502,8 @@ function NovaUI:CreateGui()
         Name = "ContentContainer",
         Parent = self.MainFrame,
         BackgroundTransparency = 1,
-        Position = UDim2.new(0, 60, 0, 50),
-        Size = UDim2.new(1, -70, 1, -60),
+        Position = UDim2.new(0, 140, 0, 50),
+        Size = UDim2.new(1, -150, 1, -60),
         ClipsDescendants = true,
     })
     
@@ -706,49 +720,42 @@ function NovaUI:CreateTab(name, icon)
         Button = nil,
     }
     
-    -- Tab Button
+    -- Tab Button with Icon and Name
     tab.Button = Utility.Create("TextButton", {
         Name = name .. "Tab",
         Parent = self.TabList,
         BackgroundColor3 = Theme.Accent,
         BackgroundTransparency = 1,
-        Size = UDim2.new(0, 40, 0, 40),
+        Size = UDim2.new(1, 0, 0, 36),
         Text = "",
     }, {
         Utility.Create("UICorner", {CornerRadius = UDim.new(0, 8)}),
-        Utility.Create("ImageLabel", {
-            Name = "Icon",
-            BackgroundTransparency = 1,
-            Position = UDim2.new(0.5, -10, 0.5, -10),
-            Size = UDim2.new(0, 20, 0, 20),
-            Image = tab.Icon,
-            ImageColor3 = Theme.TextMuted,
-        }),
     })
     
-    -- Tooltip
-    local tooltip = Utility.Create("Frame", {
-        Name = "Tooltip",
+    -- Icon
+    local tabIcon = Utility.Create("ImageLabel", {
+        Name = "Icon",
         Parent = tab.Button,
-        BackgroundColor3 = Theme.Tertiary,
-        Position = UDim2.new(1, 10, 0.5, -12),
-        Size = UDim2.new(0, 0, 0, 24),
-        ClipsDescendants = true,
-        ZIndex = 100,
-    }, {
-        Utility.Create("UICorner", {CornerRadius = UDim.new(0, 6)}),
-        Utility.Create("TextLabel", {
-            Name = "Text",
-            BackgroundTransparency = 1,
-            Position = UDim2.new(0, 8, 0, 0),
-            Size = UDim2.new(1, -16, 1, 0),
-            Font = Enum.Font.GothamMedium,
-            Text = name,
-            TextColor3 = Theme.TextPrimary,
-            TextSize = 12,
-            TextXAlignment = Enum.TextXAlignment.Left,
-            ZIndex = 100,
-        }),
+        BackgroundTransparency = 1,
+        Position = UDim2.new(0, 10, 0.5, -9),
+        Size = UDim2.new(0, 18, 0, 18),
+        Image = tab.Icon,
+        ImageColor3 = Theme.TextMuted,
+    })
+    
+    -- Tab Name Label
+    local tabLabel = Utility.Create("TextLabel", {
+        Name = "Label",
+        Parent = tab.Button,
+        BackgroundTransparency = 1,
+        Position = UDim2.new(0, 35, 0, 0),
+        Size = UDim2.new(1, -45, 1, 0),
+        Font = Enum.Font.GothamMedium,
+        Text = name,
+        TextColor3 = Theme.TextMuted,
+        TextSize = 13,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        TextTruncate = Enum.TextTruncate.AtEnd,
     })
     
     -- Tab Content Container
@@ -777,19 +784,17 @@ function NovaUI:CreateTab(name, icon)
     tab.Button.MouseEnter:Connect(function()
         if self.CurrentTab ~= tab then
             Utility.Tween(tab.Button, {BackgroundTransparency = 0.8}, 0.2)
-            Utility.Tween(tab.Button.Icon, {ImageColor3 = Theme.TextSecondary}, 0.2)
+            Utility.Tween(tabIcon, {ImageColor3 = Theme.TextSecondary}, 0.2)
+            Utility.Tween(tabLabel, {TextColor3 = Theme.TextSecondary}, 0.2)
         end
-        -- Calculate tooltip width based on text
-        local textWidth = game:GetService("TextService"):GetTextSize(name, 12, Enum.Font.GothamMedium, Vector2.new(200, 24)).X + 16
-        Utility.Tween(tooltip, {Size = UDim2.new(0, textWidth, 0, 24)}, 0.2)
     end)
     
     tab.Button.MouseLeave:Connect(function()
         if self.CurrentTab ~= tab then
             Utility.Tween(tab.Button, {BackgroundTransparency = 1}, 0.2)
-            Utility.Tween(tab.Button.Icon, {ImageColor3 = Theme.TextMuted}, 0.2)
+            Utility.Tween(tabIcon, {ImageColor3 = Theme.TextMuted}, 0.2)
+            Utility.Tween(tabLabel, {TextColor3 = Theme.TextMuted}, 0.2)
         end
-        Utility.Tween(tooltip, {Size = UDim2.new(0, 0, 0, 24)}, 0.2)
     end)
     
     tab.Button.MouseButton1Click:Connect(function()
@@ -812,6 +817,7 @@ function NovaUI:SelectTab(tab)
         self.CurrentTab.Container.Visible = false
         Utility.Tween(self.CurrentTab.Button, {BackgroundTransparency = 1}, 0.2)
         Utility.Tween(self.CurrentTab.Button.Icon, {ImageColor3 = Theme.TextMuted}, 0.2)
+        Utility.Tween(self.CurrentTab.Button.Label, {TextColor3 = Theme.TextMuted}, 0.2)
     end
     
     -- Select new tab
@@ -819,6 +825,7 @@ function NovaUI:SelectTab(tab)
     tab.Container.Visible = true
     Utility.Tween(tab.Button, {BackgroundTransparency = 0.7}, 0.2)
     Utility.Tween(tab.Button.Icon, {ImageColor3 = Theme.AccentLight}, 0.2)
+    Utility.Tween(tab.Button.Label, {TextColor3 = Theme.AccentLight}, 0.2)
     
     -- Move indicator
     local buttonPos = tab.Button.AbsolutePosition.Y - self.TabContainer.AbsolutePosition.Y
@@ -1579,33 +1586,42 @@ function NovaUI:CreateColorPicker(section, name, default, callback, flag)
     local svPicker = Utility.Create("ImageButton", {
         Name = "SVPicker",
         Parent = pickerContainer,
-        BackgroundColor3 = Color3.fromHSV(Color3.toHSV(colorpicker.Value)),
+        BackgroundColor3 = Color3.fromHSV(h, 1, 1),
         Size = UDim2.new(1, -30, 0, 90),
     }, {
         Utility.Create("UICorner", {CornerRadius = UDim.new(0, 6)}),
+    })
+    
+    -- White to Color gradient (horizontal - saturation)
+    local saturationGradient = Utility.Create("Frame", {
+        Name = "SaturationGradient",
+        Parent = svPicker,
+        BackgroundColor3 = Color3.new(1, 1, 1),
+        Size = UDim2.new(1, 0, 1, 0),
+        BorderSizePixel = 0,
+    }, {
+        Utility.Create("UICorner", {CornerRadius = UDim.new(0, 6)}),
         Utility.Create("UIGradient", {
-            Color = ColorSequence.new({
-                ColorSequenceKeypoint.new(0, Color3.new(1, 1, 1)),
-                ColorSequenceKeypoint.new(1, Color3.new(1, 1, 1)),
-            }),
+            Color = ColorSequence.new(Color3.new(1, 1, 1), Color3.new(1, 1, 1)),
             Transparency = NumberSequence.new({
                 NumberSequenceKeypoint.new(0, 0),
                 NumberSequenceKeypoint.new(1, 1),
             }),
+            Rotation = 0,
         }),
     })
     
-    -- Dark overlay for Value
+    -- Black overlay (vertical - value)
     local darkOverlay = Utility.Create("Frame", {
         Name = "DarkOverlay",
         Parent = svPicker,
         BackgroundColor3 = Color3.new(0, 0, 0),
-        BackgroundTransparency = 0,
         Size = UDim2.new(1, 0, 1, 0),
+        BorderSizePixel = 0,
     }, {
         Utility.Create("UICorner", {CornerRadius = UDim.new(0, 6)}),
         Utility.Create("UIGradient", {
-            Color = ColorSequence.new(Color3.new(0, 0, 0)),
+            Color = ColorSequence.new(Color3.new(0, 0, 0), Color3.new(0, 0, 0)),
             Transparency = NumberSequence.new({
                 NumberSequenceKeypoint.new(0, 1),
                 NumberSequenceKeypoint.new(1, 0),
