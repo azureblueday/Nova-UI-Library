@@ -96,10 +96,10 @@ local Theme = {
     Tertiary = Color3.fromRGB(30, 30, 40),
     
     -- Accent Colors (Purple)
-    Accent = Color3.fromRGB(138, 43, 226),
-    AccentDark = Color3.fromRGB(108, 33, 196),
-    AccentLight = Color3.fromRGB(168, 73, 255),
-    AccentGlow = Color3.fromRGB(168, 85, 247),
+    Accent = Color3.fromRGB(100, 110, 140),
+    AccentDark = Color3.fromRGB(80, 88, 115),
+    AccentLight = Color3.fromRGB(130, 145, 180),
+    AccentGlow = Color3.fromRGB(110, 125, 160),
     
     -- Text Colors
     TextPrimary = Color3.fromRGB(255, 255, 255),
