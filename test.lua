@@ -1,5 +1,3 @@
-
-
 local NovaUI = {}
 NovaUI.__index = NovaUI
 
