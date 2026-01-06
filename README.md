@@ -54,19 +54,8 @@ professional exploit/script GUIs. It features:
 ## Method 1: LoadString (Recommended for Executors)
 
 ```lua
-local NovaUI = loadstring(game:HttpGet("YOUR_RAW_URL_HERE"))()
+local NovaUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/azureblueday/Nova-UI-Library/refs/heads/main/uilibsrc.lua"))()
 ```
-
-## Method 2: Local Require (For Studio Testing)
-
-```lua
-local NovaUI = require(game.ReplicatedStorage.NovaUILibrary)
-```
-
-## Method 3: Direct Script
-
-Copy the entire NovaUILibrary.lua content into your script before using it.
-
 ---
 
 # 🚀 GETTING STARTED
