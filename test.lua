@@ -96,10 +96,10 @@ local Theme = {
     Tertiary = Color3.fromRGB(24, 24, 28),
     
     -- Accent Colors - Subtle blue-gray with minimal purple
-    Accent = Color3.fromRGB(138, 43, 226),
-    AccentDark = Color3.fromRGB(138, 43, 226),
-    AccentLight = Color3.fromRGB(138, 43, 226),
-    AccentGlow = Color3.fromRGB(138, 43, 226),
+    Accent = Color3.fromRGB(100, 110, 140),
+    AccentDark = Color3.fromRGB(80, 88, 115),
+    AccentLight = Color3.fromRGB(130, 145, 180),
+    AccentGlow = Color3.fromRGB(110, 125, 160),
     
     -- Text Colors - Higher contrast
     TextPrimary = Color3.fromRGB(240, 242, 245),
@@ -1300,8 +1300,6 @@ function NovaUI:CreateDropdown(section, name, options, default, callback, flag)
     
     return dropdown
 end
-
-
 -- ============================================
 -- TEXT INPUT
 -- ============================================
