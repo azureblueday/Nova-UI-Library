@@ -747,7 +747,7 @@ function NovaUI:CreateTab(name, icon)
         Position = UDim2.new(1, 10, 0.5, -12),
         Size = UDim2.new(0, 0, 0, 24),
         ClipsDescendants = true,
-        ZIndex = 100,
+        ZIndex = 999,
     }, {
         Utility.Create("UICorner", {CornerRadius = UDim.new(0, 6)}),
         Utility.Create("TextLabel", {
