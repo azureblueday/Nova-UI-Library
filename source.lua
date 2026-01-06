@@ -29,7 +29,7 @@ local Mouse = Player:GetMouse()
 -- ============================================
 -- ICON MODULE (Material Icons)
 -- ============================================
-local IconModule = {
+local Icons = {
 	["perm_media"] = "http://www.roblox.com/asset/?id=6031215982";
 	["sticky_note_2"] = "http://www.roblox.com/asset/?id=6031265972";
 	["gavel"] = "http://www.roblox.com/asset/?id=6023565902";
