@@ -1,4 +1,17 @@
-
+--[[
+    ╔═══════════════════════════════════════════════════════════════╗
+    ║                    NOVA UI LIBRARY v2.0                       ║
+    ║              Modern Dark Theme with Subtle Accents            ║
+    ║                                                               ║
+    ║  Features:                                                    ║
+    ║  • Tabs with Material Icons                                   ║
+    ║  • Toggles, Sliders, Dropdowns                               ║
+    ║  • Color Picker, Keybind Picker                              ║
+    ║  • Text Input, Buttons                                        ║
+    ║  • Smooth Animations                                          ║
+    ║  • Config Save/Load System                                    ║
+    ╚═══════════════════════════════════════════════════════════════╝
+]]
 
 local NovaUI = {}
 NovaUI.__index = NovaUI
