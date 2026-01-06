@@ -1,17 +1,4 @@
---[[
-    ╔═══════════════════════════════════════════════════════════════╗
-    ║                    NOVA UI LIBRARY v2.0                       ║
-    ║              Dark Theme with Purple Accents                   ║
-    ║                                                               ║
-    ║  Features:                                                    ║
-    ║  • Tabs with Material Icons                                   ║
-    ║  • Toggles, Sliders, Dropdowns                               ║
-    ║  • Color Picker, Keybind Picker                              ║
-    ║  • Text Input, Buttons                                        ║
-    ║  • Smooth Animations                                          ║
-    ║  • Config Save/Load System                                    ║
-    ╚═══════════════════════════════════════════════════════════════╝
-]]
+
 
 local NovaUI = {}
 NovaUI.__index = NovaUI
@@ -747,7 +734,7 @@ function NovaUI:CreateTab(name, icon)
         Position = UDim2.new(1, 10, 0.5, -12),
         Size = UDim2.new(0, 0, 0, 24),
         ClipsDescendants = true,
-        ZIndex = 999,
+        ZIndex = 100,
     }, {
         Utility.Create("UICorner", {CornerRadius = UDim.new(0, 6)}),
         Utility.Create("TextLabel", {
@@ -2000,9 +1987,27 @@ function NovaUI:BuildConfig(tab)
     
     -- Save Config Button
     self:CreateButton(configSection, "Save Config", function()
-        ConfigSystem.CurrentConfig = selectedConfig
-        if ConfigSystem:Save(selectedConfig) then
-            Window:Notify("Saved", "Config '" .. selectedConfig .. "' saved successfully!", "success", 3)
+        local saveConfigName = selectedConfig
+        
+        -- If user typed a name, use that instead
+        if configNameInput ~= "" and not configNameInput:match("^%s*$") then
+            saveConfigName = configNameInput
+        end
+        
+        ConfigSystem.CurrentConfig = saveConfigName
+        if ConfigSystem:Save(saveConfigName) then
+            selectedConfig = saveConfigName
+            Window:Notify("Saved", "Config '" .. saveConfigName .. "' saved successfully!", "success", 3)
+            refreshConfigs()
+            
+            -- Update dropdown selection
+            local header = configDropdown.Container:FindFirstChild("Header")
+            if header then
+                local selectedLabel = header:FindFirstChild("Selected")
+                if selectedLabel then
+                    selectedLabel.Text = saveConfigName
+                end
+            end
         else
             Window:Notify("Error", "Failed to save config! (No file system access)", "error", 3)
         end
