@@ -1818,7 +1818,7 @@ function NovaUI:CreateGui()
         BackgroundTransparency = 1,
         Position = UDim2.new(0, 10, 0.5, -10),
         Size = UDim2.new(0, 20, 0, 20),
-        Image = Icons.sparkle,
+        Image = Icons.bolt,
         ImageColor3 = Theme.AccentLight,
     })
     
