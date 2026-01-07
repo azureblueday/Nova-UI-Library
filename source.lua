@@ -2481,22 +2481,23 @@ function NovaUI:CreateSlider(section, name, min, max, default, callback, flag)
     })
     
     local function updateSlider(value)
-        value = math.clamp(value, slider.Min, slider.Max)
-        value = math.floor(value)
-        slider.Value = value
-        
-        local percent = (value - slider.Min) / (slider.Max - slider.Min)
-        Utility.Tween(sliderFill, {Size = UDim2.new(percent, 0, 1, 0)}, 0.1)
-        valueLabel.Text = tostring(value)
-        
-        if flag then
-            ConfigSystem:Set("sliders", flag, value)
-        end
-        
-        if callback then
-            callback(value)
+       value = math.clamp(value, slider.Min, slider.Max)
+       value = math.floor(value * 10) / 10  -- ROUND TO NEAREST 0.1
+       slider.Value = value
+    
+    local percent = (value - slider.Min) / (slider.Max - slider.Min)
+       Utility.Tween(sliderFill, {Size = UDim2.new(percent, 0, 1, 0)}, 0.1)
+       valueLabel.Text = string.format("%.1f", value)  -- DISPLAY WITH 1 DECIMAL PLACE
+    
+    if flag then
+        ConfigSystem:Set("sliders", flag, value)
+    end
+    
+    if callback then
+        callback(value)
         end
     end
+
     
     local dragging = false
     
