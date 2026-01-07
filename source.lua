@@ -1731,6 +1731,7 @@ function NovaUI.new(title, configName)
     self.Minimized = false
     self.Flags = {}
     self.Visible = true
+    self.TabCounter = 0  -- ADD THIS LINE
     
     -- Detect if mobile
     self.IsMobile = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
