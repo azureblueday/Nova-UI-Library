@@ -1736,6 +1736,10 @@ function NovaUI.new(title, configName)
     -- Detect if mobile
     self.IsMobile = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
     
+    self.UIScale = self.IsMobile and 0.7 or 1  -- 70% size on mobile, 100% on PC
+    self.WindowWidth = 600 * self.UIScale
+    self.WindowHeight = 400 * self.UIScale
+    
     ConfigSystem.CurrentConfig = self.ConfigName
     ConfigSystem:Load()
     
@@ -1765,8 +1769,8 @@ function NovaUI:CreateGui()
         Parent = self.ScreenGui,
         BackgroundColor3 = Theme.Background,
         BorderSizePixel = 0,
-        Position = UDim2.new(0.5, -300, 0.5, -200),
-        Size = UDim2.new(0, 600, 0, 400),
+        Position = UDim2.new(0.5, -self.WindowWidth/2, 0.5, -self.WindowHeight/2),
+        Size = UDim2.new(0, self.WindowWidth, 0, self.WindowHeight),
         ClipsDescendants = true,
     }, {
         Utility.Create("UICorner", {CornerRadius = UDim.new(0, 8)}),
@@ -1933,13 +1937,12 @@ function NovaUI:CreateGui()
     })
     
     -- Opening Animation
-    self.MainFrame.Size = UDim2.new(0, 600, 0, 0)
-    self.MainFrame.BackgroundTransparency = 1
-    
-    task.delay(0.1, function()
-        Utility.Tween(self.MainFrame, {Size = UDim2.new(0, 600, 0, 400), BackgroundTransparency = 0}, 0.4, Enum.EasingStyle.Back)
-    end)
-end
+self.MainFrame.Size = UDim2.new(0, self.WindowWidth, 0, 0)
+self.MainFrame.BackgroundTransparency = 1
+
+task.delay(0.1, function()
+    Utility.Tween(self.MainFrame, {Size = UDim2.new(0, self.WindowWidth, 0, self.WindowHeight), BackgroundTransparency = 0}, 0.4, Enum.EasingStyle.Back)
+end)
 
 function NovaUI:CreateControlButton(parent, icon, callback, hoverColor)
     local btn = Utility.Create("TextButton", {
@@ -1983,9 +1986,9 @@ function NovaUI:ToggleMinimize()
     self.Minimized = not self.Minimized
     
     if self.Minimized then
-        Utility.Tween(self.MainFrame, {Size = UDim2.new(0, 600, 0, 40)}, 0.3)
+        Utility.Tween(self.MainFrame, {Size = UDim2.new(0, self.WindowWidth, 0, 40 * self.UIScale)}, 0.3)
     else
-        Utility.Tween(self.MainFrame, {Size = UDim2.new(0, 600, 0, 400)}, 0.3, Enum.EasingStyle.Back)
+        Utility.Tween(self.MainFrame, {Size = UDim2.new(0, self.WindowWidth, 0, self.WindowHeight)}, 0.3, Enum.EasingStyle.Back)
     end
 end
 
@@ -1995,10 +1998,10 @@ function NovaUI:Toggle()
     if self.Visible then
         self.MainFrame.Visible = true
         self.MainFrame.BackgroundTransparency = 1
-        self.MainFrame.Size = UDim2.new(0, 600, 0, 0)
-        Utility.Tween(self.MainFrame, {Size = UDim2.new(0, 600, 0, 400), BackgroundTransparency = 0}, 0.3, Enum.EasingStyle.Back)
+        self.MainFrame.Size = UDim2.new(0, self.WindowWidth, 0, 0)
+        Utility.Tween(self.MainFrame, {Size = UDim2.new(0, self.WindowWidth, 0, self.WindowHeight), BackgroundTransparency = 0}, 0.3, Enum.EasingStyle.Back)
     else
-        Utility.Tween(self.MainFrame, {Size = UDim2.new(0, 600, 0, 0), BackgroundTransparency = 1}, 0.2)
+        Utility.Tween(self.MainFrame, {Size = UDim2.new(0, self.WindowWidth, 0, 0), BackgroundTransparency = 1}, 0.2)
         task.delay(0.2, function()
             if not self.Visible then
                 self.MainFrame.Visible = false
@@ -2481,13 +2484,13 @@ function NovaUI:CreateSlider(section, name, min, max, default, callback, flag)
     })
     
     local function updateSlider(value)
-       value = math.clamp(value, slider.Min, slider.Max)
-       value = math.floor(value * 10) / 10  -- ROUND TO NEAREST 0.1
-       slider.Value = value
+        value = math.clamp(value, slider.Min, slider.Max)
+        value = math.floor(value * 10) / 10
+        slider.Value = value
     
     local percent = (value - slider.Min) / (slider.Max - slider.Min)
-       Utility.Tween(sliderFill, {Size = UDim2.new(percent, 0, 1, 0)}, 0.1)
-       valueLabel.Text = string.format("%.1f", value)  -- DISPLAY WITH 1 DECIMAL PLACE
+        Utility.Tween(sliderFill, {Size = UDim2.new(percent, 0, 1, 0)}, 0.05)  -- CHANGED FROM 0.1 TO 0.05
+        valueLabel.Text = string.format("%.1f", value)
     
     if flag then
         ConfigSystem:Set("sliders", flag, value)
@@ -2501,26 +2504,26 @@ function NovaUI:CreateSlider(section, name, min, max, default, callback, flag)
     
     local dragging = false
     
-    sliderTrack.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = true
-            local percent = math.clamp((input.Position.X - sliderTrack.AbsolutePosition.X) / sliderTrack.AbsoluteSize.X, 0, 1)
-            updateSlider(slider.Min + (slider.Max - slider.Min) * percent)
-        end
-    end)
-    
-    UserInputService.InputChanged:Connect(function(input)
-        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-            local percent = math.clamp((input.Position.X - sliderTrack.AbsolutePosition.X) / sliderTrack.AbsoluteSize.X, 0, 1)
-            updateSlider(slider.Min + (slider.Max - slider.Min) * percent)
-        end
-    end)
-    
-    UserInputService.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = false
-        end
-    end)
+sliderTrack.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        local percent = math.clamp((input.Position.X - sliderTrack.AbsolutePosition.X) / sliderTrack.AbsoluteSize.X, 0, 1)
+        updateSlider(slider.Min + (slider.Max - slider.Min) * percent)
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+        local percent = math.clamp((input.Position.X - sliderTrack.AbsolutePosition.X) / sliderTrack.AbsoluteSize.X, 0, 1)
+        updateSlider(slider.Min + (slider.Max - slider.Min) * percent)
+    end
+end)
+
+UserInputService.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = false
+    end
+end)
     
     -- Hover effects
     container.MouseEnter:Connect(function()
