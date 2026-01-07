@@ -1836,29 +1836,6 @@ function NovaUI:CreateGui()
         TextXAlignment = Enum.TextXAlignment.Left,
     })
     
-    -- Minimal Version Badge
-    local versionBadge = Utility.Create("Frame", {
-        Name = "VersionBadge",
-        Parent = self.TitleBar,
-        BackgroundColor3 = Theme.Tertiary,
-        Position = UDim2.new(0, 100, 0.5, -9),
-        Size = UDim2.new(0, 32, 0, 18),
-    }, {
-        Utility.Create("UICorner", {CornerRadius = UDim.new(0, 4)}),
-        Utility.Create("UIStroke", {
-            Color = Theme.Border,
-            Thickness = 1,
-        }),
-        Utility.Create("TextLabel", {
-            BackgroundTransparency = 1,
-            Size = UDim2.new(1, 0, 1, 0),
-            Font = Enum.Font.GothamMedium,
-            Text = "v2",
-            TextColor3 = Theme.TextSecondary,
-            TextSize = 10,
-        }),
-    })
-    
     -- Window Controls
     local controls = Utility.Create("Frame", {
         Name = "Controls",
