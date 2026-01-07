@@ -1,3 +1,20 @@
+
+---[[
+    ╔═══════════════════════════════════════════════════════════════╗
+    ║                    NOVA UI LIBRARY v2.0                       ║
+    ║              Modern Dark Theme with Subtle Accents            ║
+    ║                                                               ║
+    ║  Features:                                                    ║
+    ║  • Tabs with Icons                                            ║
+    ║  • Toggles, Sliders, Dropdowns                               ║
+    ║  • Color Picker, Keybind Picker                              ║
+    ║  • Text Input, Buttons                                        ║
+    ║  • Smooth Animations                                          ║
+    ║  • Config Save/Load System                                    ║
+    ║  • Window:Toggle() method                                     ║
+    ╚═══════════════════════════════════════════════════════════════╝
+]]
+
 local NovaUI = {}
 NovaUI.__index = NovaUI
 
@@ -12,33 +29,61 @@ local Player = Players.LocalPlayer
 local Mouse = Player:GetMouse()
 
 -- ============================================
+-- THEME CONFIGURATION
+-- ============================================
+local Theme = {
+    Background = Color3.fromRGB(12, 12, 15),
+    Secondary = Color3.fromRGB(18, 18, 22),
+    Tertiary = Color3.fromRGB(24, 24, 28),
+    
+    Accent = Color3.fromRGB(100, 110, 140),
+    AccentDark = Color3.fromRGB(80, 88, 115),
+    AccentLight = Color3.fromRGB(130, 145, 180),
+    AccentGlow = Color3.fromRGB(110, 125, 160),
+    
+    TextPrimary = Color3.fromRGB(240, 242, 245),
+    TextSecondary = Color3.fromRGB(160, 165, 175),
+    TextMuted = Color3.fromRGB(100, 105, 115),
+    
+    Success = Color3.fromRGB(34, 197, 94),
+    Warning = Color3.fromRGB(234, 179, 8),
+    Error = Color3.fromRGB(239, 68, 68),
+    
+    Border = Color3.fromRGB(35, 35, 42),
+    BorderAccent = Color3.fromRGB(90, 100, 130),
+    
+    Shadow = Color3.fromRGB(0, 0, 0),
+    Transparent = Color3.fromRGB(0, 0, 0),
+}
+
+-- ============================================
 -- ICON MODULE (Material Icons)
 -- ============================================
-local IconModule = {
-		["perm_media"] = "http://www.roblox.com/asset/?id=6031215982";
-		["sticky_note_2"] = "http://www.roblox.com/asset/?id=6031265972";
-		["gavel"] = "http://www.roblox.com/asset/?id=6023565902";
-		["table_view"] = "http://www.roblox.com/asset/?id=6031233835";
-		["home"] = "http://www.roblox.com/asset/?id=6026568195";
-		["list"] = "http://www.roblox.com/asset/?id=6026568229";
-		["alarm_add"] = "http://www.roblox.com/asset/?id=6023426898";
-		["speaker_notes"] = "http://www.roblox.com/asset/?id=6031266001";
-		["check_circle_outline"] = "http://www.roblox.com/asset/?id=6023426909";
-		["extension"] = "http://www.roblox.com/asset/?id=6023565892";
-		["pending"] = "http://www.roblox.com/asset/?id=6031084745";
-		["pageview"] = "http://www.roblox.com/asset/?id=6031216007";
-		["group_work"] = "http://www.roblox.com/asset/?id=6023565910";
-		["zoom_in"] = "http://www.roblox.com/asset/?id=6031075573";
-		["aspect_ratio"] = "http://www.roblox.com/asset/?id=6022668895";
-		["code"] = "http://www.roblox.com/asset/?id=6022668955";
-		["3d_rotation"] = "http://www.roblox.com/asset/?id=6022668893";
-		["translate"] = "http://www.roblox.com/asset/?id=6031225812";
-		["star_rate"] = "http://www.roblox.com/asset/?id=6031265978";
-		["system_update_alt"] = "http://www.roblox.com/asset/?id=6031251515";
-		["open_with"] = "http://www.roblox.com/asset/?id=6026568265";
-		["build_circle"] = "http://www.roblox.com/asset/?id=6023426952";
+local Icons = {
+	["perm_media"] = "http://www.roblox.com/asset/?id=6031215982";
+	["sticky_note_2"] = "http://www.roblox.com/asset/?id=6031265972";
+	["gavel"] = "http://www.roblox.com/asset/?id=6023565902";
+	["table_view"] = "http://www.roblox.com/asset/?id=6031233835";
+	["home"] = "http://www.roblox.com/asset/?id=6026568195";
+	["list"] = "http://www.roblox.com/asset/?id=6026568229";
+	["alarm_add"] = "http://www.roblox.com/asset/?id=6023426898";
+	["speaker_notes"] = "http://www.roblox.com/asset/?id=6031266001";
+	["check_circle_outline"] = "http://www.roblox.com/asset/?id=6023426909";
+	["extension"] = "http://www.roblox.com/asset/?id=6023565892";
+	["pending"] = "http://www.roblox.com/asset/?id=6031084745";
+	["pageview"] = "http://www.roblox.com/asset/?id=6031216007";
+	["group_work"] = "http://www.roblox.com/asset/?id=6023565910";
+	["zoom_in"] = "http://www.roblox.com/asset/?id=6031075573";
+	["aspect_ratio"] = "http://www.roblox.com/asset/?id=6022668895";
+	["code"] = "http://www.roblox.com/asset/?id=6022668955";
+	["3d_rotation"] = "http://www.roblox.com/asset/?id=6022668893";
+	["translate"] = "http://www.roblox.com/asset/?id=6031225812";
+	["star_rate"] = "http://www.roblox.com/asset/?id=6031265978";
+	["system_update_alt"] = "http://www.roblox.com/asset/?id=6031251515";
+	["open_with"] = "http://www.roblox.com/asset/?id=6026568265";
+	["build_circle"] = "http://www.roblox.com/asset/?id=6023426952";
 		["toc"] = "http://www.roblox.com/asset/?id=6031229341";
-		["settings_phone"] = "http://www.roblox.com/asset/?id=6031289445";
+	["settings_phone"] = "http://www.roblox.com/asset/?id=6031289445";
 		["open_in_full"] = "http://www.roblox.com/asset/?id=6026568245";
 		["history"] = "http://www.roblox.com/asset/?id=6026568197";
 		["accessibility_new"] = "http://www.roblox.com/asset/?id=6022668945";
@@ -1498,42 +1543,7 @@ local IconModule = {
 		["baby_changing_station"] = "http://www.roblox.com/asset/?id=6035107930";
 		["fire_extinguisher"] = "http://www.roblox.com/asset/?id=6035121913";
 		["sparkle"] = "http://www.roblox.com/asset/?id=4483362748"
-	}
-}
 
-
--- ============================================
--- THEME CONFIGURATION - MODERN SLEEK
--- ============================================
-local Theme = {
-    -- Main Colors - Darker, more neutral
-    Background = Color3.fromRGB(12, 12, 15),
-    Secondary = Color3.fromRGB(18, 18, 22),
-    Tertiary = Color3.fromRGB(24, 24, 28),
-    
-    -- Accent Colors - Subtle blue-gray with minimal purple
-    Accent = Color3.fromRGB(100, 110, 140),
-    AccentDark = Color3.fromRGB(80, 88, 115),
-    AccentLight = Color3.fromRGB(130, 145, 180),
-    AccentGlow = Color3.fromRGB(110, 125, 160),
-    
-    -- Text Colors - Higher contrast
-    TextPrimary = Color3.fromRGB(240, 242, 245),
-    TextSecondary = Color3.fromRGB(160, 165, 175),
-    TextMuted = Color3.fromRGB(100, 105, 115),
-    
-    -- State Colors
-    Success = Color3.fromRGB(34, 197, 94),
-    Warning = Color3.fromRGB(234, 179, 8),
-    Error = Color3.fromRGB(239, 68, 68),
-    
-    -- Border & Stroke - More subtle
-    Border = Color3.fromRGB(35, 35, 42),
-    BorderAccent = Color3.fromRGB(90, 100, 130),
-    
-    -- Misc
-    Shadow = Color3.fromRGB(0, 0, 0),
-    Transparent = Color3.fromRGB(0, 0, 0),
 }
 
 -- ============================================
@@ -1717,12 +1727,15 @@ function NovaUI.new(title, configName)
     self.Minimized = false
     self.Flags = {}
     self.Visible = true
+    self.TabCounter = 0
     
-    -- Detect if mobile
     self.IsMobile = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
     
+    self.UIScale = self.IsMobile and 0.7 or 1
+    self.WindowWidth = 600 * self.UIScale
+    self.WindowHeight = 400 * self.UIScale
+    
     ConfigSystem.CurrentConfig = self.ConfigName
-    ConfigSystem:Load()
     
     self:CreateGui()
     self:CreateToggleSystem()
@@ -1731,12 +1744,10 @@ function NovaUI.new(title, configName)
 end
 
 function NovaUI:CreateGui()
-    -- Destroy existing GUI
     if game.CoreGui:FindFirstChild("NovaUI") then
         game.CoreGui:FindFirstChild("NovaUI"):Destroy()
     end
     
-    -- Main ScreenGui
     self.ScreenGui = Utility.Create("ScreenGui", {
         Name = "NovaUI",
         Parent = game.CoreGui,
@@ -1744,14 +1755,13 @@ function NovaUI:CreateGui()
         ResetOnSpawn = false,
     })
     
-    -- Main Window
     self.MainFrame = Utility.Create("Frame", {
         Name = "MainFrame",
         Parent = self.ScreenGui,
         BackgroundColor3 = Theme.Background,
         BorderSizePixel = 0,
-        Position = UDim2.new(0.5, -300, 0.5, -200),
-        Size = UDim2.new(0, 600, 0, 400),
+        Position = UDim2.new(0.5, -self.WindowWidth/2, 0.5, -self.WindowHeight/2),
+        Size = UDim2.new(0, self.WindowWidth, 0, self.WindowHeight),
         ClipsDescendants = true,
     }, {
         Utility.Create("UICorner", {CornerRadius = UDim.new(0, 8)}),
@@ -1761,7 +1771,6 @@ function NovaUI:CreateGui()
         }),
     })
     
-    -- Subtle Drop Shadow
     local shadow = Utility.Create("ImageLabel", {
         Name = "Shadow",
         Parent = self.MainFrame,
@@ -1769,14 +1778,13 @@ function NovaUI:CreateGui()
         Position = UDim2.new(0, -15, 0, -15),
         Size = UDim2.new(1, 30, 1, 30),
         ZIndex = -1,
-        Image = "rbxassetid://6015897843",
+        Image = "rbxassetid://4483362748",
         ImageColor3 = Theme.Shadow,
         ImageTransparency = 0.5,
         ScaleType = Enum.ScaleType.Slice,
         SliceCenter = Rect.new(49, 49, 450, 450),
     })
     
-    -- Title Bar
     self.TitleBar = Utility.Create("Frame", {
         Name = "TitleBar",
         Parent = self.MainFrame,
@@ -1787,7 +1795,6 @@ function NovaUI:CreateGui()
         Utility.Create("UICorner", {CornerRadius = UDim.new(0, 8)}),
     })
     
-    -- Title Bar Bottom Cover
     Utility.Create("Frame", {
         Name = "BottomCover",
         Parent = self.TitleBar,
@@ -1797,23 +1804,11 @@ function NovaUI:CreateGui()
         Size = UDim2.new(1, 0, 0, 8),
     })
     
-    -- Logo - subtle accent
-    local logo = Utility.Create("ImageLabel", {
-        Name = "Logo",
-        Parent = self.TitleBar,
-        BackgroundTransparency = 1,
-        Position = UDim2.new(0, 10, 0.5, -10),
-        Size = UDim2.new(0, 20, 0, 20),
-        Image = Icons.sparkle,
-        ImageColor3 = Theme.AccentLight,
-    })
-    
-    -- Title Text
     local titleLabel = Utility.Create("TextLabel", {
         Name = "Title",
         Parent = self.TitleBar,
         BackgroundTransparency = 1,
-        Position = UDim2.new(0, 38, 0, 0),
+        Position = UDim2.new(0, 12, 0, 0),
         Size = UDim2.new(0, 150, 1, 0),
         Font = Enum.Font.GothamBold,
         Text = self.Title,
@@ -1822,30 +1817,6 @@ function NovaUI:CreateGui()
         TextXAlignment = Enum.TextXAlignment.Left,
     })
     
-    -- Minimal Version Badge
-    local versionBadge = Utility.Create("Frame", {
-        Name = "VersionBadge",
-        Parent = self.TitleBar,
-        BackgroundColor3 = Theme.Tertiary,
-        Position = UDim2.new(0, 100, 0.5, -9),
-        Size = UDim2.new(0, 32, 0, 18),
-    }, {
-        Utility.Create("UICorner", {CornerRadius = UDim.new(0, 4)}),
-        Utility.Create("UIStroke", {
-            Color = Theme.Border,
-            Thickness = 1,
-        }),
-        Utility.Create("TextLabel", {
-            BackgroundTransparency = 1,
-            Size = UDim2.new(1, 0, 1, 0),
-            Font = Enum.Font.GothamMedium,
-            Text = "v2",
-            TextColor3 = Theme.TextSecondary,
-            TextSize = 10,
-        }),
-    })
-    
-    -- Window Controls
     local controls = Utility.Create("Frame", {
         Name = "Controls",
         Parent = self.TitleBar,
@@ -1861,20 +1832,16 @@ function NovaUI:CreateGui()
         }),
     })
     
-    -- Minimize Button
-    local minimizeBtn = self:CreateControlButton(controls, "rbxassetid://6031097229", function()
+    local minimizeBtn = self:CreateControlButton(controls, "-", function()
         self:ToggleMinimize()
     end)
     
-    -- Close Button
-    local closeBtn = self:CreateControlButton(controls, Icons.close, function()
+    local closeBtn = self:CreateControlButton(controls, "✕", function()
         self:Destroy()
     end, Theme.Error)
     
-    -- Make window draggable
     Utility.MakeDraggable(self.MainFrame, self.TitleBar)
     
-    -- Tab Container (Left Side) - Slimmer
     self.TabContainer = Utility.Create("Frame", {
         Name = "TabContainer",
         Parent = self.MainFrame,
@@ -1897,6 +1864,7 @@ function NovaUI:CreateGui()
         Utility.Create("UIListLayout", {
             Padding = UDim.new(0, 4),
             HorizontalAlignment = Enum.HorizontalAlignment.Center,
+            SortOrder = Enum.SortOrder.LayoutOrder,
         }),
         Utility.Create("UIPadding", {
             PaddingLeft = UDim.new(0, 6),
@@ -1904,7 +1872,6 @@ function NovaUI:CreateGui()
         }),
     })
     
-    -- Minimal Tab Indicator
     self.TabIndicator = Utility.Create("Frame", {
         Name = "TabIndicator",
         Parent = self.TabContainer,
@@ -1916,7 +1883,6 @@ function NovaUI:CreateGui()
         Utility.Create("UICorner", {CornerRadius = UDim.new(0, 1)}),
     })
     
-    -- Content Container
     self.ContentContainer = Utility.Create("Frame", {
         Name = "ContentContainer",
         Parent = self.MainFrame,
@@ -1926,7 +1892,6 @@ function NovaUI:CreateGui()
         ClipsDescendants = true,
     })
     
-    -- Notification Container
     self.NotificationContainer = Utility.Create("Frame", {
         Name = "Notifications",
         Parent = self.ScreenGui,
@@ -1940,43 +1905,37 @@ function NovaUI:CreateGui()
         }),
     })
     
-    -- Opening Animation
-    self.MainFrame.Size = UDim2.new(0, 600, 0, 0)
+    self.MainFrame.Size = UDim2.new(0, self.WindowWidth, 0, 0)
     self.MainFrame.BackgroundTransparency = 1
-    
+
     task.delay(0.1, function()
-        Utility.Tween(self.MainFrame, {Size = UDim2.new(0, 600, 0, 400), BackgroundTransparency = 0}, 0.4, Enum.EasingStyle.Back)
+        Utility.Tween(self.MainFrame, {Size = UDim2.new(0, self.WindowWidth, 0, self.WindowHeight), BackgroundTransparency = 0}, 0.4, Enum.EasingStyle.Back)
     end)
 end
 
-function NovaUI:CreateControlButton(parent, icon, callback, hoverColor)
+function NovaUI:CreateControlButton(parent, text, callback, hoverColor)
     local btn = Utility.Create("TextButton", {
         Name = "ControlButton",
         Parent = parent,
         BackgroundColor3 = Theme.Tertiary,
         BackgroundTransparency = 1,
         Size = UDim2.new(0, 22, 0, 22),
-        Text = "",
+        Text = text,
+        Font = Enum.Font.GothamBold,
+        TextColor3 = Theme.TextSecondary,
+        TextSize = 14,
     }, {
         Utility.Create("UICorner", {CornerRadius = UDim.new(0, 4)}),
-        Utility.Create("ImageLabel", {
-            Name = "Icon",
-            BackgroundTransparency = 1,
-            Position = UDim2.new(0.5, -7, 0.5, -7),
-            Size = UDim2.new(0, 14, 0, 14),
-            Image = icon,
-            ImageColor3 = Theme.TextSecondary,
-        }),
     })
     
     btn.MouseEnter:Connect(function()
         Utility.Tween(btn, {BackgroundTransparency = 0}, 0.2)
-        Utility.Tween(btn.Icon, {ImageColor3 = hoverColor or Theme.TextPrimary}, 0.2)
+        Utility.Tween(btn, {TextColor3 = hoverColor or Theme.TextPrimary}, 0.2)
     end)
     
     btn.MouseLeave:Connect(function()
         Utility.Tween(btn, {BackgroundTransparency = 1}, 0.2)
-        Utility.Tween(btn.Icon, {ImageColor3 = Theme.TextSecondary}, 0.2)
+        Utility.Tween(btn, {TextColor3 = Theme.TextSecondary}, 0.2)
     end)
     
     btn.MouseButton1Click:Connect(function()
@@ -1991,9 +1950,9 @@ function NovaUI:ToggleMinimize()
     self.Minimized = not self.Minimized
     
     if self.Minimized then
-        Utility.Tween(self.MainFrame, {Size = UDim2.new(0, 600, 0, 40)}, 0.3)
+        Utility.Tween(self.MainFrame, {Size = UDim2.new(0, self.WindowWidth, 0, 40 * self.UIScale)}, 0.3)
     else
-        Utility.Tween(self.MainFrame, {Size = UDim2.new(0, 600, 0, 400)}, 0.3, Enum.EasingStyle.Back)
+        Utility.Tween(self.MainFrame, {Size = UDim2.new(0, self.WindowWidth, 0, self.WindowHeight)}, 0.3, Enum.EasingStyle.Back)
     end
 end
 
@@ -2003,10 +1962,10 @@ function NovaUI:Toggle()
     if self.Visible then
         self.MainFrame.Visible = true
         self.MainFrame.BackgroundTransparency = 1
-        self.MainFrame.Size = UDim2.new(0, 600, 0, 0)
-        Utility.Tween(self.MainFrame, {Size = UDim2.new(0, 600, 0, 400), BackgroundTransparency = 0}, 0.3, Enum.EasingStyle.Back)
+        self.MainFrame.Size = UDim2.new(0, self.WindowWidth, 0, 0)
+        Utility.Tween(self.MainFrame, {Size = UDim2.new(0, self.WindowWidth, 0, self.WindowHeight), BackgroundTransparency = 0}, 0.3, Enum.EasingStyle.Back)
     else
-        Utility.Tween(self.MainFrame, {Size = UDim2.new(0, 600, 0, 0), BackgroundTransparency = 1}, 0.2)
+        Utility.Tween(self.MainFrame, {Size = UDim2.new(0, self.WindowWidth, 0, 0), BackgroundTransparency = 1}, 0.2)
         task.delay(0.2, function()
             if not self.Visible then
                 self.MainFrame.Visible = false
@@ -2017,33 +1976,25 @@ end
 
 function NovaUI:CreateToggleSystem()
     if self.IsMobile then
-        -- Mobile Toggle Button - more subtle
         self.MobileToggle = Utility.Create("TextButton", {
             Name = "MobileToggle",
             Parent = self.ScreenGui,
             BackgroundColor3 = Theme.Secondary,
             Position = UDim2.new(0, 10, 0.5, -25),
             Size = UDim2.new(0, 50, 0, 50),
-            Text = "",
+            Text = "☰",
+            Font = Enum.Font.GothamBold,
+            TextColor3 = Theme.AccentLight,
+            TextSize = 20,
             ZIndex = 1000,
         }, {
             Utility.Create("UICorner", {CornerRadius = UDim.new(1, 0)}),
-            Utility.Create("ImageLabel", {
-                Name = "Icon",
-                BackgroundTransparency = 1,
-                Position = UDim2.new(0.5, -12, 0.5, -12),
-                Size = UDim2.new(0, 24, 0, 24),
-                Image = Icons.sparkle,
-                ImageColor3 = Theme.AccentLight,
-                ZIndex = 1001,
-            }),
             Utility.Create("UIStroke", {
                 Color = Theme.Border,
                 Thickness = 2,
             }),
         })
         
-        -- Make mobile button draggable
         local dragging = false
         local dragStart, startPos
         
@@ -2074,7 +2025,6 @@ function NovaUI:CreateToggleSystem()
             end
         end)
         
-        -- Toggle UI on tap
         local touchStart = 0
         local touchStartPos = Vector2.new()
         
@@ -2101,7 +2051,6 @@ function NovaUI:CreateToggleSystem()
             end
         end)
     else
-        -- PC Keybind (Left Control to toggle)
         UserInputService.InputBegan:Connect(function(input, gameProcessed)
             if gameProcessed then return end
             
@@ -2118,11 +2067,14 @@ end
 function NovaUI:CreateTab(name, icon)
     local tab = {
         Name = name,
-        Icon = icon or Icons.home,
+        Icon = icon or "rbxassetid://6026568203",
         Elements = {},
         Container = nil,
         Button = nil,
     }
+    
+    -- Increment tab counter for layout order
+    self.TabCounter = self.TabCounter + 1
     
     -- Sleeker Tab Button
     tab.Button = Utility.Create("TextButton", {
@@ -2132,6 +2084,7 @@ function NovaUI:CreateTab(name, icon)
         BackgroundTransparency = 1,
         Size = UDim2.new(1, 0, 0, 34),
         Text = "",
+        LayoutOrder = self.TabCounter,
     }, {
         Utility.Create("UICorner", {CornerRadius = UDim.new(0, 6)}),
     })
@@ -2214,6 +2167,12 @@ function NovaUI:CreateTab(name, icon)
     
     return tab
 end
+
+NovaUI.Theme = Theme
+NovaUI.Utility = Utility
+NovaUI.ConfigSystem = ConfigSystem
+
+return NovaUI
 
 function NovaUI:SelectTab(tab)
     -- Deselect previous tab
@@ -2490,12 +2449,12 @@ function NovaUI:CreateSlider(section, name, min, max, default, callback, flag)
     
     local function updateSlider(value)
         value = math.clamp(value, slider.Min, slider.Max)
-        value = math.floor(value)
+        value = math.floor(value * 10) / 10
         slider.Value = value
         
         local percent = (value - slider.Min) / (slider.Max - slider.Min)
-        Utility.Tween(sliderFill, {Size = UDim2.new(percent, 0, 1, 0)}, 0.1)
-        valueLabel.Text = tostring(value)
+        Utility.Tween(sliderFill, {Size = UDim2.new(percent, 0, 1, 0)}, 0.05)
+        valueLabel.Text = string.format("%.1f", value)
         
         if flag then
             ConfigSystem:Set("sliders", flag, value)
@@ -2509,7 +2468,7 @@ function NovaUI:CreateSlider(section, name, min, max, default, callback, flag)
     local dragging = false
     
     sliderTrack.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             dragging = true
             local percent = math.clamp((input.Position.X - sliderTrack.AbsolutePosition.X) / sliderTrack.AbsoluteSize.X, 0, 1)
             updateSlider(slider.Min + (slider.Max - slider.Min) * percent)
@@ -2517,14 +2476,14 @@ function NovaUI:CreateSlider(section, name, min, max, default, callback, flag)
     end)
     
     UserInputService.InputChanged:Connect(function(input)
-        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+        if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
             local percent = math.clamp((input.Position.X - sliderTrack.AbsolutePosition.X) / sliderTrack.AbsoluteSize.X, 0, 1)
             updateSlider(slider.Min + (slider.Max - slider.Min) * percent)
         end
     end)
     
     UserInputService.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             dragging = false
         end
     end)
@@ -2716,6 +2675,7 @@ function NovaUI:CreateDropdown(section, name, options, default, callback, flag)
     
     return dropdown
 end
+
 -- ============================================
 -- TEXT INPUT
 -- ============================================
@@ -2935,6 +2895,8 @@ function NovaUI:CreateColorPicker(section, name, default, callback, flag)
         self.Flags[flag] = colorpicker
     end
     
+    local h, s, v = Color3.toHSV(colorpicker.Value)
+    
     local container = Utility.Create("Frame", {
         Name = name .. "ColorPicker",
         Parent = section.Content,
@@ -3038,7 +3000,7 @@ function NovaUI:CreateColorPicker(section, name, default, callback, flag)
         Parent = svPicker,
         AnchorPoint = Vector2.new(0.5, 0.5),
         BackgroundColor3 = Color3.new(1, 1, 1),
-        Position = UDim2.new(0.5, 0, 0.5, 0),
+        Position = UDim2.new(s, 0, 1 - v, 0),
         Size = UDim2.new(0, 12, 0, 12),
     }, {
         Utility.Create("UICorner", {CornerRadius = UDim.new(1, 0)}),
@@ -3073,7 +3035,7 @@ function NovaUI:CreateColorPicker(section, name, default, callback, flag)
         Parent = huePicker,
         AnchorPoint = Vector2.new(0.5, 0.5),
         BackgroundColor3 = Color3.new(1, 1, 1),
-        Position = UDim2.new(0.5, 0, 0, 0),
+        Position = UDim2.new(0.5, 0, h, 0),
         Size = UDim2.new(1, 4, 0, 6),
     }, {
         Utility.Create("UICorner", {CornerRadius = UDim.new(0, 3)}),
@@ -3096,8 +3058,6 @@ function NovaUI:CreateColorPicker(section, name, default, callback, flag)
         Utility.Create("UICorner", {CornerRadius = UDim.new(0, 4)}),
     })
     
-    local h, s, v = Color3.toHSV(colorpicker.Value)
-    
     local function updateColor()
         local newColor = Color3.fromHSV(h, s, v)
         colorpicker.Value = newColor
@@ -3118,13 +3078,19 @@ function NovaUI:CreateColorPicker(section, name, default, callback, flag)
     local svDragging = false
     
     svPicker.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             svDragging = true
+            local relativeX = math.clamp((input.Position.X - svPicker.AbsolutePosition.X) / svPicker.AbsoluteSize.X, 0, 1)
+            local relativeY = math.clamp((input.Position.Y - svPicker.AbsolutePosition.Y) / svPicker.AbsoluteSize.Y, 0, 1)
+            s = relativeX
+            v = 1 - relativeY
+            svCursor.Position = UDim2.new(relativeX, 0, relativeY, 0)
+            updateColor()
         end
     end)
     
     UserInputService.InputChanged:Connect(function(input)
-        if svDragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+        if svDragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
             local relativeX = math.clamp((input.Position.X - svPicker.AbsolutePosition.X) / svPicker.AbsoluteSize.X, 0, 1)
             local relativeY = math.clamp((input.Position.Y - svPicker.AbsolutePosition.Y) / svPicker.AbsoluteSize.Y, 0, 1)
             
@@ -3137,7 +3103,7 @@ function NovaUI:CreateColorPicker(section, name, default, callback, flag)
     end)
     
     UserInputService.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             svDragging = false
         end
     end)
@@ -3146,13 +3112,17 @@ function NovaUI:CreateColorPicker(section, name, default, callback, flag)
     local hueDragging = false
     
     huePicker.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             hueDragging = true
+            local relativeY = math.clamp((input.Position.Y - huePicker.AbsolutePosition.Y) / huePicker.AbsoluteSize.Y, 0, 1)
+            h = relativeY
+            hueCursor.Position = UDim2.new(0.5, 0, relativeY, 0)
+            updateColor()
         end
     end)
     
     UserInputService.InputChanged:Connect(function(input)
-        if hueDragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+        if hueDragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
             local relativeY = math.clamp((input.Position.Y - huePicker.AbsolutePosition.Y) / huePicker.AbsoluteSize.Y, 0, 1)
             
             h = relativeY
@@ -3162,7 +3132,7 @@ function NovaUI:CreateColorPicker(section, name, default, callback, flag)
     end)
     
     UserInputService.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             hueDragging = false
         end
     end)
@@ -3358,12 +3328,6 @@ function NovaUI:BuildConfig(tab)
                     end
                 end)
             end
-            
-            -- Update container size when opened
-            local optionsCount = #configList
-            configDropdown.Container:GetPropertyChangedSignal("Size"):Connect(function()
-                -- Size is managed by the dropdown open/close
-            end)
         end
         
         Window:Notify("Refreshed", "Config list refreshed!", "info", 2)
@@ -3440,10 +3404,8 @@ function NovaUI:BuildConfig(tab)
             -- Update all flagged elements with loaded values
             for flag, element in pairs(Window.Flags) do
                 if element.Set then
-                    local category = nil
                     local value = nil
                     
-                    -- Determine category based on element type
                     if ConfigSystem.Configs.toggles and ConfigSystem.Configs.toggles[flag] ~= nil then
                         value = ConfigSystem.Configs.toggles[flag]
                     elseif ConfigSystem.Configs.sliders and ConfigSystem.Configs.sliders[flag] ~= nil then
