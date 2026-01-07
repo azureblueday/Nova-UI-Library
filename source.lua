@@ -1619,7 +1619,7 @@ end
 local ConfigSystem = {}
 ConfigSystem.Configs = {}
 ConfigSystem.CurrentConfig = "default"
-ConfigSystem.SaveFolder = "NovaUI"
+ConfigSystem.SaveFolder = "Cryptic"
 
 function ConfigSystem:GetSavePath()
     return self.SaveFolder .. "/" .. self.CurrentConfig .. ".json"
@@ -1819,8 +1819,8 @@ function NovaUI:CreateGui()
         self:ToggleMinimize()
     end)
     
-    local closeBtn = self:CreateControlButton(controls, "✕", function()
-        self:Destroy()
+    local closeBtn = self:CreateControlButton(controls, "X", function()
+        self:Toggle()
     end, Theme.Error)
     
     Utility.MakeDraggable(self.MainFrame, self.TitleBar)
@@ -1965,7 +1965,7 @@ function NovaUI:CreateToggleSystem()
             BackgroundColor3 = Theme.Secondary,
             Position = UDim2.new(0, 10, 0.5, -25),
             Size = UDim2.new(0, 50, 0, 50),
-            Text = "☰",
+            Text = "🌙",
             Font = Enum.Font.GothamBold,
             TextColor3 = Theme.AccentLight,
             TextSize = 20,
