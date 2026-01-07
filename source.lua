@@ -1516,6 +1516,7 @@ local Icons = {
 
 }
 
+
 -- ============================================
 -- THEME CONFIGURATION - MODERN SLEEK
 -- ============================================
@@ -1731,12 +1732,12 @@ function NovaUI.new(title, configName)
     self.Minimized = false
     self.Flags = {}
     self.Visible = true
-    self.TabCounter = 0  -- ADD THIS LINE
+    self.TabCounter = 0
     
     -- Detect if mobile
     self.IsMobile = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
     
-    self.UIScale = self.IsMobile and 0.7 or 1  -- 70% size on mobile, 100% on PC
+    self.UIScale = self.IsMobile and 0.7 or 1
     self.WindowWidth = 600 * self.UIScale
     self.WindowHeight = 400 * self.UIScale
     
@@ -1937,12 +1938,13 @@ function NovaUI:CreateGui()
     })
     
     -- Opening Animation
-self.MainFrame.Size = UDim2.new(0, self.WindowWidth, 0, 0)
-self.MainFrame.BackgroundTransparency = 1
+    self.MainFrame.Size = UDim2.new(0, self.WindowWidth, 0, 0)
+    self.MainFrame.BackgroundTransparency = 1
 
-task.delay(0.1, function()
-    Utility.Tween(self.MainFrame, {Size = UDim2.new(0, self.WindowWidth, 0, self.WindowHeight), BackgroundTransparency = 0}, 0.4, Enum.EasingStyle.Back)
-end)
+    task.delay(0.1, function()
+        Utility.Tween(self.MainFrame, {Size = UDim2.new(0, self.WindowWidth, 0, self.WindowHeight), BackgroundTransparency = 0}, 0.4, Enum.EasingStyle.Back)
+    end)
+end -- THIS WAS THE MISSING END
 
 function NovaUI:CreateControlButton(parent, icon, callback, hoverColor)
     local btn = Utility.Create("TextButton", {
@@ -2487,43 +2489,42 @@ function NovaUI:CreateSlider(section, name, min, max, default, callback, flag)
         value = math.clamp(value, slider.Min, slider.Max)
         value = math.floor(value * 10) / 10
         slider.Value = value
-    
-    local percent = (value - slider.Min) / (slider.Max - slider.Min)
-        Utility.Tween(sliderFill, {Size = UDim2.new(percent, 0, 1, 0)}, 0.05)  -- CHANGED FROM 0.1 TO 0.05
+        
+        local percent = (value - slider.Min) / (slider.Max - slider.Min)
+        Utility.Tween(sliderFill, {Size = UDim2.new(percent, 0, 1, 0)}, 0.05)
         valueLabel.Text = string.format("%.1f", value)
-    
-    if flag then
-        ConfigSystem:Set("sliders", flag, value)
-    end
-    
-    if callback then
-        callback(value)
+        
+        if flag then
+            ConfigSystem:Set("sliders", flag, value)
+        end
+        
+        if callback then
+            callback(value)
         end
     end
-
     
     local dragging = false
     
-sliderTrack.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        dragging = true
-        local percent = math.clamp((input.Position.X - sliderTrack.AbsolutePosition.X) / sliderTrack.AbsoluteSize.X, 0, 1)
-        updateSlider(slider.Min + (slider.Max - slider.Min) * percent)
-    end
-end)
-
-UserInputService.InputChanged:Connect(function(input)
-    if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-        local percent = math.clamp((input.Position.X - sliderTrack.AbsolutePosition.X) / sliderTrack.AbsoluteSize.X, 0, 1)
-        updateSlider(slider.Min + (slider.Max - slider.Min) * percent)
-    end
-end)
-
-UserInputService.InputEnded:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        dragging = false
-    end
-end)
+    sliderTrack.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragging = true
+            local percent = math.clamp((input.Position.X - sliderTrack.AbsolutePosition.X) / sliderTrack.AbsoluteSize.X, 0, 1)
+            updateSlider(slider.Min + (slider.Max - slider.Min) * percent)
+        end
+    end)
+    
+    UserInputService.InputChanged:Connect(function(input)
+        if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+            local percent = math.clamp((input.Position.X - sliderTrack.AbsolutePosition.X) / sliderTrack.AbsoluteSize.X, 0, 1)
+            updateSlider(slider.Min + (slider.Max - slider.Min) * percent)
+        end
+    end)
+    
+    UserInputService.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragging = false
+        end
+    end)
     
     -- Hover effects
     container.MouseEnter:Connect(function()
@@ -2712,6 +2713,7 @@ function NovaUI:CreateDropdown(section, name, options, default, callback, flag)
     
     return dropdown
 end
+
 -- ============================================
 -- TEXT INPUT
 -- ============================================
@@ -2931,6 +2933,8 @@ function NovaUI:CreateColorPicker(section, name, default, callback, flag)
         self.Flags[flag] = colorpicker
     end
     
+    local h, s, v = Color3.toHSV(colorpicker.Value)
+    
     local container = Utility.Create("Frame", {
         Name = name .. "ColorPicker",
         Parent = section.Content,
@@ -3034,7 +3038,7 @@ function NovaUI:CreateColorPicker(section, name, default, callback, flag)
         Parent = svPicker,
         AnchorPoint = Vector2.new(0.5, 0.5),
         BackgroundColor3 = Color3.new(1, 1, 1),
-        Position = UDim2.new(0.5, 0, 0.5, 0),
+        Position = UDim2.new(s, 0, 1 - v, 0),
         Size = UDim2.new(0, 12, 0, 12),
     }, {
         Utility.Create("UICorner", {CornerRadius = UDim.new(1, 0)}),
@@ -3069,7 +3073,7 @@ function NovaUI:CreateColorPicker(section, name, default, callback, flag)
         Parent = huePicker,
         AnchorPoint = Vector2.new(0.5, 0.5),
         BackgroundColor3 = Color3.new(1, 1, 1),
-        Position = UDim2.new(0.5, 0, 0, 0),
+        Position = UDim2.new(0.5, 0, h, 0),
         Size = UDim2.new(1, 4, 0, 6),
     }, {
         Utility.Create("UICorner", {CornerRadius = UDim.new(0, 3)}),
@@ -3092,8 +3096,6 @@ function NovaUI:CreateColorPicker(section, name, default, callback, flag)
         Utility.Create("UICorner", {CornerRadius = UDim.new(0, 4)}),
     })
     
-    local h, s, v = Color3.toHSV(colorpicker.Value)
-    
     local function updateColor()
         local newColor = Color3.fromHSV(h, s, v)
         colorpicker.Value = newColor
@@ -3114,13 +3116,19 @@ function NovaUI:CreateColorPicker(section, name, default, callback, flag)
     local svDragging = false
     
     svPicker.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             svDragging = true
+            local relativeX = math.clamp((input.Position.X - svPicker.AbsolutePosition.X) / svPicker.AbsoluteSize.X, 0, 1)
+            local relativeY = math.clamp((input.Position.Y - svPicker.AbsolutePosition.Y) / svPicker.AbsoluteSize.Y, 0, 1)
+            s = relativeX
+            v = 1 - relativeY
+            svCursor.Position = UDim2.new(relativeX, 0, relativeY, 0)
+            updateColor()
         end
     end)
     
     UserInputService.InputChanged:Connect(function(input)
-        if svDragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+        if svDragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
             local relativeX = math.clamp((input.Position.X - svPicker.AbsolutePosition.X) / svPicker.AbsoluteSize.X, 0, 1)
             local relativeY = math.clamp((input.Position.Y - svPicker.AbsolutePosition.Y) / svPicker.AbsoluteSize.Y, 0, 1)
             
@@ -3133,7 +3141,7 @@ function NovaUI:CreateColorPicker(section, name, default, callback, flag)
     end)
     
     UserInputService.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             svDragging = false
         end
     end)
@@ -3142,13 +3150,17 @@ function NovaUI:CreateColorPicker(section, name, default, callback, flag)
     local hueDragging = false
     
     huePicker.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             hueDragging = true
+            local relativeY = math.clamp((input.Position.Y - huePicker.AbsolutePosition.Y) / huePicker.AbsoluteSize.Y, 0, 1)
+            h = relativeY
+            hueCursor.Position = UDim2.new(0.5, 0, relativeY, 0)
+            updateColor()
         end
     end)
     
     UserInputService.InputChanged:Connect(function(input)
-        if hueDragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+        if hueDragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
             local relativeY = math.clamp((input.Position.Y - huePicker.AbsolutePosition.Y) / huePicker.AbsoluteSize.Y, 0, 1)
             
             h = relativeY
@@ -3158,7 +3170,7 @@ function NovaUI:CreateColorPicker(section, name, default, callback, flag)
     end)
     
     UserInputService.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             hueDragging = false
         end
     end)
@@ -3354,12 +3366,6 @@ function NovaUI:BuildConfig(tab)
                     end
                 end)
             end
-            
-            -- Update container size when opened
-            local optionsCount = #configList
-            configDropdown.Container:GetPropertyChangedSignal("Size"):Connect(function()
-                -- Size is managed by the dropdown open/close
-            end)
         end
         
         Window:Notify("Refreshed", "Config list refreshed!", "info", 2)
@@ -3436,10 +3442,8 @@ function NovaUI:BuildConfig(tab)
             -- Update all flagged elements with loaded values
             for flag, element in pairs(Window.Flags) do
                 if element.Set then
-                    local category = nil
                     local value = nil
                     
-                    -- Determine category based on element type
                     if ConfigSystem.Configs.toggles and ConfigSystem.Configs.toggles[flag] ~= nil then
                         value = ConfigSystem.Configs.toggles[flag]
                     elseif ConfigSystem.Configs.sliders and ConfigSystem.Configs.sliders[flag] ~= nil then
