@@ -1,18 +1,3 @@
---[[
-    ╔═══════════════════════════════════════════════════════════════╗
-    ║                    NOVA UI LIBRARY v2.0                       ║
-    ║              Modern Dark Theme with Subtle Accents            ║
-    ║                                                               ║
-    ║  Features:                                                    ║
-    ║  • Tabs with Material Icons                                   ║
-    ║  • Toggles, Sliders, Dropdowns                               ║
-    ║  • Color Picker, Keybind Picker                              ║
-    ║  • Text Input, Buttons                                        ║
-    ║  • Smooth Animations                                          ║
-    ║  • Config Save/Load System                                    ║
-    ╚═══════════════════════════════════════════════════════════════╝
-]]
-
 local NovaUI = {}
 NovaUI.__index = NovaUI
 
@@ -25,6 +10,34 @@ local Players = game:GetService("Players")
 
 local Player = Players.LocalPlayer
 local Mouse = Player:GetMouse()
+
+-- ============================================
+-- THEME CONFIGURATION
+-- ============================================
+local Theme = {
+    Background = Color3.fromRGB(12, 12, 15),
+    Secondary = Color3.fromRGB(18, 18, 22),
+    Tertiary = Color3.fromRGB(24, 24, 28),
+    
+    Accent = Color3.fromRGB(100, 110, 140),
+    AccentDark = Color3.fromRGB(80, 88, 115),
+    AccentLight = Color3.fromRGB(130, 145, 180),
+    AccentGlow = Color3.fromRGB(110, 125, 160),
+    
+    TextPrimary = Color3.fromRGB(240, 242, 245),
+    TextSecondary = Color3.fromRGB(160, 165, 175),
+    TextMuted = Color3.fromRGB(100, 105, 115),
+    
+    Success = Color3.fromRGB(34, 197, 94),
+    Warning = Color3.fromRGB(234, 179, 8),
+    Error = Color3.fromRGB(239, 68, 68),
+    
+    Border = Color3.fromRGB(35, 35, 42),
+    BorderAccent = Color3.fromRGB(90, 100, 130),
+    
+    Shadow = Color3.fromRGB(0, 0, 0),
+    Transparent = Color3.fromRGB(0, 0, 0),
+}
 
 -- ============================================
 -- ICON MODULE (Material Icons)
@@ -1516,41 +1529,6 @@ local Icons = {
 
 }
 
-
--- ============================================
--- THEME CONFIGURATION - MODERN SLEEK
--- ============================================
-local Theme = {
-    -- Main Colors - Darker, more neutral
-    Background = Color3.fromRGB(12, 12, 15),
-    Secondary = Color3.fromRGB(18, 18, 22),
-    Tertiary = Color3.fromRGB(24, 24, 28),
-    
-    -- Accent Colors - Subtle blue-gray with minimal purple
-    Accent = Color3.fromRGB(100, 110, 140),
-    AccentDark = Color3.fromRGB(80, 88, 115),
-    AccentLight = Color3.fromRGB(130, 145, 180),
-    AccentGlow = Color3.fromRGB(110, 125, 160),
-    
-    -- Text Colors - Higher contrast
-    TextPrimary = Color3.fromRGB(240, 242, 245),
-    TextSecondary = Color3.fromRGB(160, 165, 175),
-    TextMuted = Color3.fromRGB(100, 105, 115),
-    
-    -- State Colors
-    Success = Color3.fromRGB(34, 197, 94),
-    Warning = Color3.fromRGB(234, 179, 8),
-    Error = Color3.fromRGB(239, 68, 68),
-    
-    -- Border & Stroke - More subtle
-    Border = Color3.fromRGB(35, 35, 42),
-    BorderAccent = Color3.fromRGB(90, 100, 130),
-    
-    -- Misc
-    Shadow = Color3.fromRGB(0, 0, 0),
-    Transparent = Color3.fromRGB(0, 0, 0),
-}
-
 -- ============================================
 -- UTILITY FUNCTIONS
 -- ============================================
@@ -1734,7 +1712,6 @@ function NovaUI.new(title, configName)
     self.Visible = true
     self.TabCounter = 0
     
-    -- Detect if mobile
     self.IsMobile = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
     
     self.UIScale = self.IsMobile and 0.7 or 1
@@ -1742,7 +1719,6 @@ function NovaUI.new(title, configName)
     self.WindowHeight = 400 * self.UIScale
     
     ConfigSystem.CurrentConfig = self.ConfigName
-    ConfigSystem:Load()
     
     self:CreateGui()
     self:CreateToggleSystem()
@@ -1751,12 +1727,10 @@ function NovaUI.new(title, configName)
 end
 
 function NovaUI:CreateGui()
-    -- Destroy existing GUI
     if game.CoreGui:FindFirstChild("NovaUI") then
         game.CoreGui:FindFirstChild("NovaUI"):Destroy()
     end
     
-    -- Main ScreenGui
     self.ScreenGui = Utility.Create("ScreenGui", {
         Name = "NovaUI",
         Parent = game.CoreGui,
@@ -1764,7 +1738,6 @@ function NovaUI:CreateGui()
         ResetOnSpawn = false,
     })
     
-    -- Main Window
     self.MainFrame = Utility.Create("Frame", {
         Name = "MainFrame",
         Parent = self.ScreenGui,
@@ -1781,7 +1754,6 @@ function NovaUI:CreateGui()
         }),
     })
     
-    -- Subtle Drop Shadow
     local shadow = Utility.Create("ImageLabel", {
         Name = "Shadow",
         Parent = self.MainFrame,
@@ -1796,7 +1768,6 @@ function NovaUI:CreateGui()
         SliceCenter = Rect.new(49, 49, 450, 450),
     })
     
-    -- Title Bar
     self.TitleBar = Utility.Create("Frame", {
         Name = "TitleBar",
         Parent = self.MainFrame,
@@ -1807,7 +1778,6 @@ function NovaUI:CreateGui()
         Utility.Create("UICorner", {CornerRadius = UDim.new(0, 8)}),
     })
     
-    -- Title Bar Bottom Cover
     Utility.Create("Frame", {
         Name = "BottomCover",
         Parent = self.TitleBar,
@@ -1817,23 +1787,11 @@ function NovaUI:CreateGui()
         Size = UDim2.new(1, 0, 0, 8),
     })
     
-    -- Logo - subtle accent
-    local logo = Utility.Create("ImageLabel", {
-        Name = "Logo",
-        Parent = self.TitleBar,
-        BackgroundTransparency = 1,
-        Position = UDim2.new(0, 10, 0.5, -10),
-        Size = UDim2.new(0, 20, 0, 20),
-        Image = Icons.bolt,
-        ImageColor3 = Theme.AccentLight,
-    })
-    
-    -- Title Text
     local titleLabel = Utility.Create("TextLabel", {
         Name = "Title",
         Parent = self.TitleBar,
         BackgroundTransparency = 1,
-        Position = UDim2.new(0, 38, 0, 0),
+        Position = UDim2.new(0, 12, 0, 0),
         Size = UDim2.new(0, 150, 1, 0),
         Font = Enum.Font.GothamBold,
         Text = self.Title,
@@ -1842,7 +1800,6 @@ function NovaUI:CreateGui()
         TextXAlignment = Enum.TextXAlignment.Left,
     })
     
-    -- Window Controls
     local controls = Utility.Create("Frame", {
         Name = "Controls",
         Parent = self.TitleBar,
@@ -1858,20 +1815,16 @@ function NovaUI:CreateGui()
         }),
     })
     
-    -- Minimize Button
-    local minimizeBtn = self:CreateControlButton(controls, "rbxassetid://6031097229", function()
+    local minimizeBtn = self:CreateControlButton(controls, "-", function()
         self:ToggleMinimize()
     end)
     
-    -- Close Button
-    local closeBtn = self:CreateControlButton(controls, Icons.close, function()
+    local closeBtn = self:CreateControlButton(controls, "✕", function()
         self:Destroy()
     end, Theme.Error)
     
-    -- Make window draggable
     Utility.MakeDraggable(self.MainFrame, self.TitleBar)
     
-    -- Tab Container (Left Side) - Slimmer
     self.TabContainer = Utility.Create("Frame", {
         Name = "TabContainer",
         Parent = self.MainFrame,
@@ -1894,6 +1847,7 @@ function NovaUI:CreateGui()
         Utility.Create("UIListLayout", {
             Padding = UDim.new(0, 4),
             HorizontalAlignment = Enum.HorizontalAlignment.Center,
+            SortOrder = Enum.SortOrder.LayoutOrder,
         }),
         Utility.Create("UIPadding", {
             PaddingLeft = UDim.new(0, 6),
@@ -1901,7 +1855,6 @@ function NovaUI:CreateGui()
         }),
     })
     
-    -- Minimal Tab Indicator
     self.TabIndicator = Utility.Create("Frame", {
         Name = "TabIndicator",
         Parent = self.TabContainer,
@@ -1913,7 +1866,6 @@ function NovaUI:CreateGui()
         Utility.Create("UICorner", {CornerRadius = UDim.new(0, 1)}),
     })
     
-    -- Content Container
     self.ContentContainer = Utility.Create("Frame", {
         Name = "ContentContainer",
         Parent = self.MainFrame,
@@ -1923,7 +1875,6 @@ function NovaUI:CreateGui()
         ClipsDescendants = true,
     })
     
-    -- Notification Container
     self.NotificationContainer = Utility.Create("Frame", {
         Name = "Notifications",
         Parent = self.ScreenGui,
@@ -1937,43 +1888,37 @@ function NovaUI:CreateGui()
         }),
     })
     
-    -- Opening Animation
     self.MainFrame.Size = UDim2.new(0, self.WindowWidth, 0, 0)
     self.MainFrame.BackgroundTransparency = 1
 
     task.delay(0.1, function()
         Utility.Tween(self.MainFrame, {Size = UDim2.new(0, self.WindowWidth, 0, self.WindowHeight), BackgroundTransparency = 0}, 0.4, Enum.EasingStyle.Back)
     end)
-end -- THIS WAS THE MISSING END
+end
 
-function NovaUI:CreateControlButton(parent, icon, callback, hoverColor)
+function NovaUI:CreateControlButton(parent, text, callback, hoverColor)
     local btn = Utility.Create("TextButton", {
         Name = "ControlButton",
         Parent = parent,
         BackgroundColor3 = Theme.Tertiary,
         BackgroundTransparency = 1,
         Size = UDim2.new(0, 22, 0, 22),
-        Text = "",
+        Text = text,
+        Font = Enum.Font.GothamBold,
+        TextColor3 = Theme.TextSecondary,
+        TextSize = 14,
     }, {
         Utility.Create("UICorner", {CornerRadius = UDim.new(0, 4)}),
-        Utility.Create("ImageLabel", {
-            Name = "Icon",
-            BackgroundTransparency = 1,
-            Position = UDim2.new(0.5, -7, 0.5, -7),
-            Size = UDim2.new(0, 14, 0, 14),
-            Image = icon,
-            ImageColor3 = Theme.TextSecondary,
-        }),
     })
     
     btn.MouseEnter:Connect(function()
         Utility.Tween(btn, {BackgroundTransparency = 0}, 0.2)
-        Utility.Tween(btn.Icon, {ImageColor3 = hoverColor or Theme.TextPrimary}, 0.2)
+        Utility.Tween(btn, {TextColor3 = hoverColor or Theme.TextPrimary}, 0.2)
     end)
     
     btn.MouseLeave:Connect(function()
         Utility.Tween(btn, {BackgroundTransparency = 1}, 0.2)
-        Utility.Tween(btn.Icon, {ImageColor3 = Theme.TextSecondary}, 0.2)
+        Utility.Tween(btn, {TextColor3 = Theme.TextSecondary}, 0.2)
     end)
     
     btn.MouseButton1Click:Connect(function()
@@ -2014,33 +1959,25 @@ end
 
 function NovaUI:CreateToggleSystem()
     if self.IsMobile then
-        -- Mobile Toggle Button - more subtle
         self.MobileToggle = Utility.Create("TextButton", {
             Name = "MobileToggle",
             Parent = self.ScreenGui,
             BackgroundColor3 = Theme.Secondary,
             Position = UDim2.new(0, 10, 0.5, -25),
             Size = UDim2.new(0, 50, 0, 50),
-            Text = "",
+            Text = "☰",
+            Font = Enum.Font.GothamBold,
+            TextColor3 = Theme.AccentLight,
+            TextSize = 20,
             ZIndex = 1000,
         }, {
             Utility.Create("UICorner", {CornerRadius = UDim.new(1, 0)}),
-            Utility.Create("ImageLabel", {
-                Name = "Icon",
-                BackgroundTransparency = 1,
-                Position = UDim2.new(0.5, -12, 0.5, -12),
-                Size = UDim2.new(0, 24, 0, 24),
-                Image = "rbxassetid://6015897843",
-                ImageColor3 = Theme.AccentLight,
-                ZIndex = 1001,
-            }),
             Utility.Create("UIStroke", {
                 Color = Theme.Border,
                 Thickness = 2,
             }),
         })
         
-        -- Make mobile button draggable
         local dragging = false
         local dragStart, startPos
         
@@ -2071,7 +2008,6 @@ function NovaUI:CreateToggleSystem()
             end
         end)
         
-        -- Toggle UI on tap
         local touchStart = 0
         local touchStartPos = Vector2.new()
         
@@ -2098,7 +2034,6 @@ function NovaUI:CreateToggleSystem()
             end
         end)
     else
-        -- PC Keybind (Left Control to toggle)
         UserInputService.InputBegan:Connect(function(input, gameProcessed)
             if gameProcessed then return end
             
@@ -2115,11 +2050,14 @@ end
 function NovaUI:CreateTab(name, icon)
     local tab = {
         Name = name,
-        Icon = icon or Icons.home,
+        Icon = icon or "rbxassetid://6026568203",
         Elements = {},
         Container = nil,
         Button = nil,
     }
+    
+    -- Increment tab counter for layout order
+    self.TabCounter = self.TabCounter + 1
     
     -- Sleeker Tab Button
     tab.Button = Utility.Create("TextButton", {
@@ -2129,6 +2067,7 @@ function NovaUI:CreateTab(name, icon)
         BackgroundTransparency = 1,
         Size = UDim2.new(1, 0, 0, 34),
         Text = "",
+        LayoutOrder = self.TabCounter,
     }, {
         Utility.Create("UICorner", {CornerRadius = UDim.new(0, 6)}),
     })
