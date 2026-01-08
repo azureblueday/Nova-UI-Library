@@ -1959,16 +1959,15 @@ end
 
 function NovaUI:CreateToggleSystem()
     if self.IsMobile then
-        self.MobileToggle = Utility.Create("TextButton", {
+        self.MobileToggle = Utility.Create("ImageButton", {
             Name = "MobileToggle",
             Parent = self.ScreenGui,
             BackgroundColor3 = Theme.Secondary,
             Position = UDim2.new(0, 10, 0.5, -25),
             Size = UDim2.new(0, 50, 0, 50),
-            Text = "🌙",
-            Font = Enum.Font.GothamBold,
-            TextColor3 = Theme.AccentLight,
-            TextSize = 20,
+            Image = "rbxassetid://105782012551828",
+            ImageColor3 = Theme.AccentLight,
+            AutoButtonColor = false,
             ZIndex = 1000,
         }, {
             Utility.Create("UICorner", {CornerRadius = UDim.new(1, 0)}),
