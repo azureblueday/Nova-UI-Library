@@ -11,9 +11,6 @@ local Players = game:GetService("Players")
 local Player = Players.LocalPlayer
 local Mouse = Player:GetMouse()
 
--- ============================================
--- THEME CONFIGURATION
--- ============================================
 local Theme = {
     Background = Color3.fromRGB(12, 12, 15),
     Secondary = Color3.fromRGB(18, 18, 22),
@@ -39,9 +36,6 @@ local Theme = {
     Transparent = Color3.fromRGB(0, 0, 0),
 }
 
--- ============================================
--- ICON MODULE (Material Icons)
--- ============================================
 local Icons = {
 	["perm_media"] = "http://www.roblox.com/asset/?id=6031215982";
 	["sticky_note_2"] = "http://www.roblox.com/asset/?id=6031265972";
@@ -1529,9 +1523,6 @@ local Icons = {
 
 }
 
--- ============================================
--- UTILITY FUNCTIONS
--- ============================================
 local Utility = {}
 
 function Utility.Create(instanceType, properties, children)
@@ -1613,9 +1604,6 @@ function Utility.MakeDraggable(frame, handle)
     end)
 end
 
--- ============================================
--- CONFIG SYSTEM
--- ============================================
 local ConfigSystem = {}
 ConfigSystem.Configs = {}
 ConfigSystem.CurrentConfig = "default"
@@ -1697,9 +1685,6 @@ function ConfigSystem:Get(category, key, default)
     return default
 end
 
--- ============================================
--- MAIN LIBRARY
--- ============================================
 function NovaUI.new(title, configName)
     local self = setmetatable({}, NovaUI)
     
@@ -2043,9 +2028,6 @@ function NovaUI:CreateToggleSystem()
     end
 end
 
--- ============================================
--- TAB SYSTEM
--- ============================================
 function NovaUI:CreateTab(name, icon)
     local tab = {
         Name = name,
@@ -2171,9 +2153,6 @@ function NovaUI:SelectTab(tab)
     Utility.Tween(self.TabIndicator, {Position = UDim2.new(0, 0, 0, buttonPos)}, 0.3, Enum.EasingStyle.Back)
 end
 
--- ============================================
--- SECTION
--- ============================================
 function NovaUI:CreateSection(tab, name)
     local section = {
         Name = name,
@@ -2234,9 +2213,6 @@ function NovaUI:CreateSection(tab, name)
     return section
 end
 
--- ============================================
--- TOGGLE
--- ============================================
 function NovaUI:CreateToggle(section, name, default, callback, flag)
     local toggle = {
         Name = name,
@@ -2332,9 +2308,6 @@ function NovaUI:CreateToggle(section, name, default, callback, flag)
     return toggle
 end
 
--- ============================================
--- SLIDER
--- ============================================
 function NovaUI:CreateSlider(section, name, min, max, default, callback, flag)
     local slider = {
         Name = name,
@@ -2482,9 +2455,6 @@ function NovaUI:CreateSlider(section, name, min, max, default, callback, flag)
     return slider
 end
 
--- ============================================
--- DROPDOWN
--- ============================================
 function NovaUI:CreateDropdown(section, name, options, default, callback, flag)
     local dropdown = {
         Name = name,
@@ -2744,9 +2714,6 @@ function NovaUI:CreateTextInput(section, name, placeholder, default, callback, f
     return textinput
 end
 
--- ============================================
--- KEYBIND PICKER
--- ============================================
 function NovaUI:CreateKeybind(section, name, default, callback, flag)
     local keybind = {
         Name = name,
@@ -2849,10 +2816,6 @@ function NovaUI:CreateKeybind(section, name, default, callback, flag)
     
     return keybind
 end
-
--- ============================================
--- COLOR PICKER
--- ============================================
 function NovaUI:CreateColorPicker(section, name, default, callback, flag)
     local colorpicker = {
         Name = name,
@@ -3201,9 +3164,6 @@ function NovaUI:CreateButton(section, name, callback)
     return button
 end
 
--- ============================================
--- LABEL
--- ============================================
 function NovaUI:CreateLabel(section, text)
     local label = Utility.Create("TextLabel", {
         Name = "Label",
@@ -3477,9 +3437,6 @@ function NovaUI:BuildConfig(tab)
     return configSection
 end
 
--- ============================================
--- NOTIFICATION SYSTEM
--- ============================================
 function NovaUI:Notify(title, message, notifType, duration)
     local colors = {
         success = Theme.Success,
@@ -3591,9 +3548,6 @@ function NovaUI:Notify(title, message, notifType, duration)
     end)
 end
 
--- ============================================
--- DESTROY
--- ============================================
 function NovaUI:Destroy()
     -- Save config before closing
     ConfigSystem:Save()
@@ -3610,9 +3564,6 @@ function NovaUI:Destroy()
     end)
 end
 
--- ============================================
--- EXPORT ICONS FOR EXTERNAL USE
--- ============================================
 NovaUI.Icons = Icons
 NovaUI.Theme = Theme
 NovaUI.Utility = Utility
