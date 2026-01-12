@@ -1950,7 +1950,7 @@ function NovaUI:CreateToggleSystem()
             BackgroundColor3 = Theme.Secondary,
             Position = UDim2.new(0, 10, 0.5, -25),
             Size = UDim2.new(0, 50, 0, 50),
-            Image = "rbxassetid://105782012551828",
+            Image = "rbxassetid://132784206381635",
             ImageColor3 = Theme.AccentLight,
             AutoButtonColor = false,
             ZIndex = 1000,
