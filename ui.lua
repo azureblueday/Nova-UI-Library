@@ -1,40 +1,3 @@
---[[
-    ╔═══════════════════════════════════════════════════════════════╗
-    ║                         VOID UI                               ║
-    ║         Minimalistic UI Library for Roblox                    ║
-    ║                     v1.1.0                                    ║
-    ╚═══════════════════════════════════════════════════════════════╝
-    
-    Features:
-    - Dark theme with purple accents
-    - More rounded UI elements (toggles, sliders, inputs)
-    - Mobile support (auto 0.7x scale + draggable toggle button)
-    - Configuration saving/loading system
-    - Close button toggles visibility (doesn't destroy)
-    
-    Usage:
-    local VoidUI = loadstring(game:HttpGet("YOUR_URL"))()
-    
-    local Window = VoidUI:CreateWindow({
-        Title = "My Script",
-        Size = UDim2.new(0, 500, 0, 400),
-        ConfigFolder = "MyScript"
-    })
-    
-    local MainTab = Window:CreateTab({Name = "Main", Icon = "rbxassetid://..."})
-    local SettingsTab = Window:CreateTab({Name = "Settings", Icon = "rbxassetid://..."})
-    
-    MainTab:CreateToggle({
-        Name = "Enable Feature",
-        Default = false,
-        Flag = "EnableFeature",
-        Callback = function(value) print(value) end
-    })
-    
-    -- Build config UI in settings tab
-    Window:BuildConfigSection(SettingsTab)
-]]
-
 local VoidUI = {}
 VoidUI.__index = VoidUI
 
@@ -72,7 +35,7 @@ local Theme = {
     FontMedium = Enum.Font.GothamMedium,
     FontRegular = Enum.Font.Gotham,
     CornerRadius = UDim.new(0, 8),
-    CornerRadiusSmall = UDim.new(0, 6),
+    CornerRadiusSmall = UDim.new(0, 4),
     CornerRadiusLarge = UDim.new(0, 12),
     ElementHeight = 38,
 }
