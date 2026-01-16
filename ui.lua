@@ -173,7 +173,7 @@ function VoidUI:CreateWindow(config)
     mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
     mainFrame.ClipsDescendants = true
     mainFrame.Parent = screenGui
-    CreateCorner(mainFrame, Theme.CornerRadiusLarge)
+    CreateCorner(mainFrame, Theme.CornerRadiusSmall)
     CreateStroke(mainFrame, Theme.Border, 1)
     
     local shadow = Instance.new("ImageLabel")
@@ -194,7 +194,7 @@ function VoidUI:CreateWindow(config)
     titleBar.BorderSizePixel = 0
     titleBar.Size = UDim2.new(1, 0, 0, Scale(44))
     titleBar.Parent = mainFrame
-    CreateCorner(titleBar, Theme.CornerRadiusLarge)
+    CreateCorner(titleBar, Theme.CornerRadiusSmall)
     
     local titleBarFix = Instance.new("Frame")
     titleBarFix.BackgroundColor3 = Theme.Surface
@@ -841,6 +841,239 @@ function VoidUI:CreateWindow(config)
             return btn
         end
         
+        -- ColorPicker
+        function Tab:CreateColorPicker(cfg)
+            cfg = cfg or {}
+            local currentColor = cfg.Default or Color3.fromRGB(138, 43, 226)
+            local isColorOpen = false
+            
+            local container = Instance.new("Frame")
+            container.BackgroundColor3 = Theme.Surface
+            container.BorderSizePixel = 0
+            container.Size = UDim2.new(1, 0, 0, Scale(Theme.ElementHeight))
+            container.ClipsDescendants = true
+            container.Parent = contentFrame
+            CreateCorner(container, Theme.CornerRadius)
+            CreateStroke(container, Theme.Border, 1)
+            
+            local label = Instance.new("TextLabel")
+            label.BackgroundTransparency = 1
+            label.Size = UDim2.new(1, Scale(-60), 0, Scale(Theme.ElementHeight))
+            label.Position = UDim2.new(0, Scale(14), 0, 0)
+            label.Font = Theme.FontMedium
+            label.Text = cfg.Name or "Color"
+            label.TextColor3 = Theme.TextPrimary
+            label.TextSize = Scale(12)
+            label.TextXAlignment = Enum.TextXAlignment.Left
+            label.Parent = container
+            
+            local colorPreview = Instance.new("Frame")
+            colorPreview.BackgroundColor3 = currentColor
+            colorPreview.BorderSizePixel = 0
+            colorPreview.Size = UDim2.new(0, Scale(26), 0, Scale(26))
+            colorPreview.Position = UDim2.new(1, Scale(-40), 0.5, Scale(-13))
+            colorPreview.Parent = container
+            CreateCorner(colorPreview, Theme.CornerRadiusSmall)
+            CreateStroke(colorPreview, Theme.Border, 1)
+            
+            local pickerPanel = Instance.new("Frame")
+            pickerPanel.BackgroundTransparency = 1
+            pickerPanel.Size = UDim2.new(1, Scale(-28), 0, Scale(120))
+            pickerPanel.Position = UDim2.new(0, Scale(14), 0, Scale(Theme.ElementHeight + 8))
+            pickerPanel.Parent = container
+            
+            local svPicker = Instance.new("ImageLabel")
+            svPicker.BackgroundColor3 = currentColor
+            svPicker.BorderSizePixel = 0
+            svPicker.Size = UDim2.new(1, Scale(-32), 1, 0)
+            svPicker.Image = "rbxassetid://4155801252"
+            svPicker.Parent = pickerPanel
+            CreateCorner(svPicker, Theme.CornerRadiusSmall)
+            
+            local svCursor = Instance.new("Frame")
+            svCursor.BackgroundColor3 = Color3.new(1, 1, 1)
+            svCursor.BorderSizePixel = 0
+            svCursor.Size = UDim2.new(0, Scale(12), 0, Scale(12))
+            svCursor.AnchorPoint = Vector2.new(0.5, 0.5)
+            svCursor.Position = UDim2.new(1, 0, 0, 0)
+            svCursor.Parent = svPicker
+            CreateCorner(svCursor, UDim.new(1, 0))
+            CreateStroke(svCursor, Color3.new(0, 0, 0), 2)
+            
+            local hueSlider = Instance.new("Frame")
+            hueSlider.BorderSizePixel = 0
+            hueSlider.Size = UDim2.new(0, Scale(22), 1, 0)
+            hueSlider.Position = UDim2.new(1, Scale(-22), 0, 0)
+            hueSlider.Parent = pickerPanel
+            CreateCorner(hueSlider, UDim.new(1, 0))
+            
+            local hueGradient = Instance.new("UIGradient")
+            hueGradient.Rotation = 90
+            hueGradient.Color = ColorSequence.new({
+                ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
+                ColorSequenceKeypoint.new(0.17, Color3.fromRGB(255, 255, 0)),
+                ColorSequenceKeypoint.new(0.33, Color3.fromRGB(0, 255, 0)),
+                ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 255, 255)),
+                ColorSequenceKeypoint.new(0.67, Color3.fromRGB(0, 0, 255)),
+                ColorSequenceKeypoint.new(0.83, Color3.fromRGB(255, 0, 255)),
+                ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 0))
+            })
+            hueGradient.Parent = hueSlider
+            
+            local hueCursor = Instance.new("Frame")
+            hueCursor.BackgroundColor3 = Color3.new(1, 1, 1)
+            hueCursor.BorderSizePixel = 0
+            hueCursor.Size = UDim2.new(1, 6, 0, Scale(8))
+            hueCursor.Position = UDim2.new(0, -3, 0, 0)
+            hueCursor.Parent = hueSlider
+            CreateCorner(hueCursor, UDim.new(1, 0))
+            CreateStroke(hueCursor, Color3.new(0, 0, 0), 1)
+            
+            local h, s, v = currentColor:ToHSV()
+            
+            local function UpdateColor()
+                currentColor = Color3.fromHSV(h, s, v)
+                colorPreview.BackgroundColor3 = currentColor
+                svPicker.BackgroundColor3 = Color3.fromHSV(h, 1, 1)
+                svCursor.Position = UDim2.new(s, 0, 1 - v, 0)
+                hueCursor.Position = UDim2.new(0, -3, h, Scale(-4))
+                if cfg.Callback then cfg.Callback(currentColor) end
+            end
+            UpdateColor()
+            
+            local svDragging, hueDragging = false, false
+            
+            svPicker.InputBegan:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                    svDragging = true
+                end
+            end)
+            svPicker.InputEnded:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                    svDragging = false
+                end
+            end)
+            
+            hueSlider.InputBegan:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                    hueDragging = true
+                end
+            end)
+            hueSlider.InputEnded:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                    hueDragging = false
+                end
+            end)
+            
+            UserInputService.InputChanged:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+                    if svDragging then
+                        local relX = math.clamp((input.Position.X - svPicker.AbsolutePosition.X) / svPicker.AbsoluteSize.X, 0, 1)
+                        local relY = math.clamp((input.Position.Y - svPicker.AbsolutePosition.Y) / svPicker.AbsoluteSize.Y, 0, 1)
+                        s, v = relX, 1 - relY
+                        UpdateColor()
+                    elseif hueDragging then
+                        h = math.clamp((input.Position.Y - hueSlider.AbsolutePosition.Y) / hueSlider.AbsoluteSize.Y, 0, 1)
+                        UpdateColor()
+                    end
+                end
+            end)
+            
+            local clickBtn = Instance.new("TextButton")
+            clickBtn.BackgroundTransparency = 1
+            clickBtn.Size = UDim2.new(1, 0, 0, Scale(Theme.ElementHeight))
+            clickBtn.Text = ""
+            clickBtn.Parent = container
+            clickBtn.MouseButton1Click:Connect(function()
+                isColorOpen = not isColorOpen
+                if isColorOpen then
+                    Tween(container, {Size = UDim2.new(1, 0, 0, Scale(Theme.ElementHeight + 136))}, 0.25, Enum.EasingStyle.Back)
+                else
+                    Tween(container, {Size = UDim2.new(1, 0, 0, Scale(Theme.ElementHeight))}, 0.2)
+                end
+            end)
+            
+            container.MouseEnter:Connect(function() Tween(container, {BackgroundColor3 = Theme.SurfaceHover}, 0.1) end)
+            container.MouseLeave:Connect(function() Tween(container, {BackgroundColor3 = Theme.Surface}, 0.1) end)
+            
+            local ColorPicker = {}
+            function ColorPicker:Set(color)
+                currentColor = color
+                h, s, v = color:ToHSV()
+                UpdateColor()
+            end
+            function ColorPicker:Get() return currentColor end
+            if cfg.Flag then Window.Flags[cfg.Flag] = ColorPicker end
+            return ColorPicker
+        end
+        
+        -- Keybind
+        function Tab:CreateKeybind(cfg)
+            cfg = cfg or {}
+            local currentKey = cfg.Default or Enum.KeyCode.Unknown
+            local listening = false
+            
+            local container = Instance.new("Frame")
+            container.BackgroundColor3 = Theme.Surface
+            container.BorderSizePixel = 0
+            container.Size = UDim2.new(1, 0, 0, Scale(Theme.ElementHeight))
+            container.Parent = contentFrame
+            CreateCorner(container, Theme.CornerRadius)
+            CreateStroke(container, Theme.Border, 1)
+            
+            local label = Instance.new("TextLabel")
+            label.BackgroundTransparency = 1
+            label.Size = UDim2.new(1, Scale(-80), 1, 0)
+            label.Position = UDim2.new(0, Scale(14), 0, 0)
+            label.Font = Theme.FontMedium
+            label.Text = cfg.Name or "Keybind"
+            label.TextColor3 = Theme.TextPrimary
+            label.TextSize = Scale(12)
+            label.TextXAlignment = Enum.TextXAlignment.Left
+            label.Parent = container
+            
+            local keyBtn = Instance.new("TextButton")
+            keyBtn.BackgroundColor3 = Theme.Background
+            keyBtn.BorderSizePixel = 0
+            keyBtn.Size = UDim2.new(0, Scale(60), 0, Scale(26))
+            keyBtn.Position = UDim2.new(1, Scale(-72), 0.5, Scale(-13))
+            keyBtn.Font = Theme.FontMedium
+            keyBtn.Text = currentKey == Enum.KeyCode.Unknown and "None" or currentKey.Name
+            keyBtn.TextColor3 = Theme.Accent
+            keyBtn.TextSize = Scale(11)
+            keyBtn.AutoButtonColor = false
+            keyBtn.Parent = container
+            CreateCorner(keyBtn, UDim.new(1, 0))
+            CreateStroke(keyBtn, Theme.Border, 1)
+            
+            keyBtn.MouseButton1Click:Connect(function()
+                listening = true
+                keyBtn.Text = "..."
+                Tween(keyBtn, {BackgroundColor3 = Theme.AccentDark}, 0.15)
+            end)
+            
+            UserInputService.InputBegan:Connect(function(input, processed)
+                if listening and input.UserInputType == Enum.UserInputType.Keyboard then
+                    listening = false
+                    currentKey = input.KeyCode
+                    keyBtn.Text = currentKey.Name
+                    Tween(keyBtn, {BackgroundColor3 = Theme.Background}, 0.15)
+                    if cfg.Callback then cfg.Callback(currentKey) end
+                elseif not listening and input.KeyCode == currentKey then
+                    if cfg.OnPress then cfg.OnPress() end
+                end
+            end)
+            
+            container.MouseEnter:Connect(function() Tween(container, {BackgroundColor3 = Theme.SurfaceHover}, 0.1) end)
+            container.MouseLeave:Connect(function() Tween(container, {BackgroundColor3 = Theme.Surface}, 0.1) end)
+            
+            local Keybind = {}
+            function Keybind:Set(key) currentKey = key keyBtn.Text = key.Name end
+            function Keybind:Get() return currentKey end
+            if cfg.Flag then Window.Flags[cfg.Flag] = Keybind end
+            return Keybind
+        end
+        
         -- Section
         function Tab:CreateSection(title)
             local section = Instance.new("Frame")
@@ -951,18 +1184,18 @@ function VoidUI:CreateWindow(config)
         Tab:CreateSection("Configuration")
         local nameInput = Tab:CreateInput({Name = "Config Name", Placeholder = "Enter name...", Default = "default"})
         local dropdown = Tab:CreateDropdown({Name = "Select Config", Options = Window:GetConfigs(), Default = "Select..."})
-        Tab:CreateButton({Name = "💾 Save Config", Callback = function()
+        Tab:CreateButton({Name = "Save Config", Callback = function()
             local name = nameInput:Get()
             if name and name ~= "" then
                 Window:SaveConfig(name)
                 dropdown:Refresh(Window:GetConfigs())
             end
         end})
-        Tab:CreateButton({Name = "📂 Load Config", Callback = function()
+        Tab:CreateButton({Name = "Load Config", Callback = function()
             local sel = dropdown:Get()
             if sel and sel ~= "Select..." then Window:LoadConfig(sel) end
         end})
-        Tab:CreateButton({Name = "🔄 Refresh Configs", Callback = function()
+        Tab:CreateButton({Name = "Refresh Configs", Callback = function()
             dropdown:Refresh(Window:GetConfigs())
             Window:Notify({Title = "Refreshed", Content = "Config list updated!", Duration = 2})
         end})
@@ -1021,7 +1254,7 @@ function VoidUI:CreateWindow(config)
     end
     
     -- Toggle Window
-    local toggleKey = config.ToggleKey or Enum.KeyCode.RightControl
+    local toggleKey = config.ToggleKey or Enum.KeyCode.LeftControl
     UserInputService.InputBegan:Connect(function(input, processed)
         if not processed and input.KeyCode == toggleKey then Window:Toggle(not isVisible) end
     end)
