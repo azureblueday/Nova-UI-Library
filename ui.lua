@@ -1,5 +1,5 @@
-local NovaUI = {}
-NovaUI.__index = NovaUI
+local VoidUI = {}
+VoidUI.__index = VoidUI
 
 -- Services
 local TweenService = game:GetService("TweenService")
@@ -104,20 +104,20 @@ function FS.Read(p) if FS.Ok() and isfile(p) then return readfile(p) end return 
 function FS.List(f) if FS.Ok() and isfolder(f) then return listfiles(f) end return {} end
 
 -- Main Library
-function NovaUI:CreateWindow(config)
+function VoidUI:CreateWindow(config)
     config = config or {}
     local Window = {}
     Window.Tabs = {}
     Window.ActiveTab = nil
     Window.Flags = {}
-    Window.ConfigFolder = config.ConfigFolder or "NovaUI"
+    Window.ConfigFolder = config.ConfigFolder or "VoidUI"
     Window.ConfigPath = Window.ConfigFolder .. "/configs"
     
     FS.EnsureFolder(Window.ConfigFolder)
     FS.EnsureFolder(Window.ConfigPath)
     
     local screenGui = Instance.new("ScreenGui")
-    screenGui.Name = "NovaUI"
+    screenGui.Name = "VoidUI"
     screenGui.ResetOnSpawn = false
     screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
     pcall(function() screenGui.Parent = game:GetService("CoreGui") end)
@@ -1246,8 +1246,8 @@ function NovaUI:CreateWindow(config)
     return Window
 end
 
-function NovaUI:SetTheme(t) for k, v in pairs(t) do if Theme[k] then Theme[k] = v end end end
-function NovaUI:GetTheme() return Theme end
-function NovaUI:IsMobile() return IS_MOBILE end
+function VoidUI:SetTheme(t) for k, v in pairs(t) do if Theme[k] then Theme[k] = v end end end
+function VoidUI:GetTheme() return Theme end
+function VoidUI:IsMobile() return IS_MOBILE end
 
-return NovaUI
+return VoidUI
