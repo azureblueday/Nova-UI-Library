@@ -1,3 +1,4 @@
+print("UI Lib Loaded")
 
 local VoidUI = {}
 VoidUI.__index = VoidUI
@@ -429,7 +430,7 @@ function VoidUI:CreateWindow(config)
         table.insert(Window.Tabs, Tab)
         if #Window.Tabs == 1 then SelectTab() end
         
-        -- Toggle (More Rounded)
+        -- Toggle (More Rounded) - FIXED: Set now triggers callback
         function Tab:CreateToggle(cfg)
             cfg = cfg or {}
             local value = cfg.Default or false
@@ -495,13 +496,18 @@ function VoidUI:CreateWindow(config)
             container.MouseLeave:Connect(function() Tween(container, {BackgroundColor3 = Theme.Surface}, 0.1) end)
             
             local Toggle = {}
-            function Toggle:Set(v) value = v Update() end
+            -- FIXED: Set now calls callback to actually apply the value
+            function Toggle:Set(v)
+                value = v
+                Update()
+                if cfg.Callback then cfg.Callback(value) end
+            end
             function Toggle:Get() return value end
             if cfg.Flag then Window.Flags[cfg.Flag] = Toggle end
             return Toggle
         end
         
-        -- Slider (More Rounded)
+        -- Slider (More Rounded) - FIXED: Set now triggers callback
         function Tab:CreateSlider(cfg)
             cfg = cfg or {}
             local min, max = cfg.Min or 0, cfg.Max or 100
@@ -594,19 +600,21 @@ function VoidUI:CreateWindow(config)
             container.MouseLeave:Connect(function() Tween(container, {BackgroundColor3 = Theme.Surface}, 0.1) end)
             
             local Slider = {}
+            -- FIXED: Set now calls callback to actually apply the value
             function Slider:Set(v)
                 value = math.clamp(v, min, max)
                 local pos = (value - min) / (max - min)
                 fill.Size = UDim2.new(pos, 0, 1, 0)
                 knob.Position = UDim2.new(pos, Scale(-6), 0.5, Scale(-6))
                 valueLabel.Text = string.format("%.1f", value)
+                if cfg.Callback then cfg.Callback(value) end
             end
             function Slider:Get() return value end
             if cfg.Flag then Window.Flags[cfg.Flag] = Slider end
             return Slider
         end
         
-        -- Dropdown
+        -- Dropdown - FIXED: Set now triggers callback
         function Tab:CreateDropdown(cfg)
             cfg = cfg or {}
             local options = cfg.Options or {}
@@ -715,7 +723,12 @@ function VoidUI:CreateWindow(config)
             container.MouseLeave:Connect(function() Tween(container, {BackgroundColor3 = Theme.Surface}, 0.1) end)
             
             local Dropdown = {}
-            function Dropdown:Set(v) selected = v selectedLabel.Text = v end
+            -- FIXED: Set now calls callback to actually apply the value
+            function Dropdown:Set(v)
+                selected = v
+                selectedLabel.Text = v
+                if cfg.Callback then cfg.Callback(v) end
+            end
             function Dropdown:Get() return selected end
             function Dropdown:Refresh(newOptions)
                 options = newOptions
@@ -728,7 +741,7 @@ function VoidUI:CreateWindow(config)
             return Dropdown
         end
         
-        -- Input
+        -- Input - FIXED: Set now triggers callback
         function Tab:CreateInput(cfg)
             cfg = cfg or {}
             local container = Instance.new("Frame")
@@ -783,7 +796,11 @@ function VoidUI:CreateWindow(config)
             container.MouseLeave:Connect(function() Tween(container, {BackgroundColor3 = Theme.Surface}, 0.1) end)
             
             local Input = {}
-            function Input:Set(t) textBox.Text = t end
+            -- FIXED: Set now calls callback to actually apply the value
+            function Input:Set(t)
+                textBox.Text = t
+                if cfg.Callback then cfg.Callback(t, false) end
+            end
             function Input:Get() return textBox.Text end
             if cfg.Flag then Window.Flags[cfg.Flag] = Input end
             return Input
@@ -810,7 +827,7 @@ function VoidUI:CreateWindow(config)
             return btn
         end
         
-        -- ColorPicker
+        -- ColorPicker (already calls callback in UpdateColor, so it's fine)
         function Tab:CreateColorPicker(cfg)
             cfg = cfg or {}
             local currentColor = cfg.Default or Color3.fromRGB(138, 43, 226)
@@ -976,7 +993,7 @@ function VoidUI:CreateWindow(config)
             return ColorPicker
         end
         
-        -- Keybind
+        -- Keybind - FIXED: Set now triggers callback
         function Tab:CreateKeybind(cfg)
             cfg = cfg or {}
             local currentKey = cfg.Default or Enum.KeyCode.Unknown
@@ -1037,7 +1054,12 @@ function VoidUI:CreateWindow(config)
             container.MouseLeave:Connect(function() Tween(container, {BackgroundColor3 = Theme.Surface}, 0.1) end)
             
             local Keybind = {}
-            function Keybind:Set(key) currentKey = key keyBtn.Text = key.Name end
+            -- FIXED: Set now calls callback to actually apply the value
+            function Keybind:Set(key)
+                currentKey = key
+                keyBtn.Text = key == Enum.KeyCode.Unknown and "None" or key.Name
+                if cfg.Callback then cfg.Callback(currentKey) end
+            end
             function Keybind:Get() return currentKey end
             if cfg.Flag then Window.Flags[cfg.Flag] = Keybind end
             return Keybind
