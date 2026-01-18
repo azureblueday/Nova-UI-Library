@@ -1,6 +1,6 @@
+print("v33")
 local VoidUI = {}
 VoidUI.__index = VoidUI
-print("V32")
 
 -- Services
 local TweenService = game:GetService("TweenService")
@@ -495,7 +495,7 @@ function VoidUI:CreateWindow(config)
             container.MouseLeave:Connect(function() Tween(container, {BackgroundColor3 = Theme.Surface}, 0.1) end)
             
             local Toggle = {}
-            function Toggle:Set(v) value = v Update() if cfg.Callback then cfg.Callback(value) end end
+            function Toggle:Set(v) value = v Update() if cfg.Callback then pcall(cfg.Callback, value) end end
             function Toggle:Get() return value end
             if cfg.Flag then Window.Flags[cfg.Flag] = Toggle end
             return Toggle
@@ -600,7 +600,7 @@ function VoidUI:CreateWindow(config)
                 fill.Size = UDim2.new(pos, 0, 1, 0)
                 knob.Position = UDim2.new(pos, Scale(-6), 0.5, Scale(-6))
                 valueLabel.Text = string.format("%.1f", value)
-                if cfg.Callback then cfg.Callback(value) end
+                if cfg.Callback then pcall(cfg.Callback, value) end
             end
             function Slider:Get() return value end
             if cfg.Flag then Window.Flags[cfg.Flag] = Slider end
@@ -716,7 +716,7 @@ function VoidUI:CreateWindow(config)
             container.MouseLeave:Connect(function() Tween(container, {BackgroundColor3 = Theme.Surface}, 0.1) end)
             
             local Dropdown = {}
-            function Dropdown:Set(v) selected = v selectedLabel.Text = v if cfg.Callback then cfg.Callback(v) end end
+            function Dropdown:Set(v) selected = v selectedLabel.Text = v if cfg.Callback then pcall(cfg.Callback, v) end end
             function Dropdown:Get() return selected end
             function Dropdown:Refresh(newOptions)
                 options = newOptions
@@ -784,7 +784,7 @@ function VoidUI:CreateWindow(config)
             container.MouseLeave:Connect(function() Tween(container, {BackgroundColor3 = Theme.Surface}, 0.1) end)
             
             local Input = {}
-            function Input:Set(t) textBox.Text = t if cfg.Callback then cfg.Callback(t, false) end end
+            function Input:Set(t) textBox.Text = t if cfg.Callback then pcall(cfg.Callback, t, false) end end
             function Input:Get() return textBox.Text end
             if cfg.Flag then Window.Flags[cfg.Flag] = Input end
             return Input
@@ -1038,7 +1038,7 @@ function VoidUI:CreateWindow(config)
             container.MouseLeave:Connect(function() Tween(container, {BackgroundColor3 = Theme.Surface}, 0.1) end)
             
             local Keybind = {}
-            function Keybind:Set(key) currentKey = key keyBtn.Text = key.Name if cfg.Callback then cfg.Callback(currentKey) end end
+            function Keybind:Set(key) currentKey = key keyBtn.Text = key.Name if cfg.Callback then pcall(cfg.Callback, currentKey) end end
             function Keybind:Get() return currentKey end
             if cfg.Flag then Window.Flags[cfg.Flag] = Keybind end
             return Keybind
